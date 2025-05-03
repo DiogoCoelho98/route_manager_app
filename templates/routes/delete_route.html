@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Delete Route - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div 
+    class="
+      flex 
+      flex-col 
+      items-center 
+      justify-center 
+      mt-12 
+      px-4"
+  >
+    <div 
+      class="
+        bg-white 
+        p-6 
+        rounded-lg 
+        shadow-md 
+        border 
+        border-gray-200 
+        max-w-md 
+        w-full"
+    >
+      <h2 class="text-xl font-semibold mb-4 text-center">
+        🗑️ Delete Route
+      </h2>
+
+      <p class="mb-4 text-center text-gray-800">
+        Are you sure you want to <span class="font-bold">delete</span>
+        <strong class="text-black">"{{ route[0]["name"] }}"</strong>?
+        <br />
+        <span class="text-sm text-gray-600">This action cannot be undone.</span>
+      </p>
+      
+
+      <form 
+        action="{{ url_for('delete_route', route_id = route_id) }}" 
+        method="post" 
+        class="flex flex-col sm:flex-row justify-center gap-4"
+      >
+        <button 
+          type="submit" 
+          class="
+            w-auto
+            bg-red-600 
+            text-white 
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-red-700 
+            transition
+            cursor-pointer"
+            >
+          ✅ Yes, Delete Route
+        </button>
+
+        <a 
+          href="{{ url_for('all_routes') }}" 
+          class="
+          w-auto
+          sm:w-auto
+          bg-gray-300 
+          text-black
+          text-center 
+          px-4 
+          py-2 
+          rounded-lg 
+          hover:bg-gray-400 
+          transition 
+          cursor-pointer"
+          >
+          ❌ Cancel
+        </a>
+      </form>
+    </div>
+  </div>
+{% endblock %}

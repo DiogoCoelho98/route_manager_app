@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Edit Profile - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div class="my-[2%] p-6 max-w-xl mx-auto">
+    <h2 class="text-2xl font-bold mb-4">⚙️ Edit Profile</h2>
+
+    <form 
+      action="/profile/edit" 
+      method="POST" 
+      enctype="multipart/form-data"
+      class="space-y-4"
+    >
+
+      <!-- Current Username -->
+      <div>
+        <label class="block font-semibold mb-1">Current Username</label>
+        <input
+          type="text"
+          class="bg-gray-100 border border-gray-300 rounded w-full px-4 py-2"
+          value="{{ user[0]['username'] }}"
+          disabled
+        />
+      </div>
+
+      <!-- New Username -->
+      <div>
+        <label class="block font-semibold mb-1" for="username">
+          Change Username
+        </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          autofocus
+          autocomplete="off"
+          required
+          class="border rounded w-full px-4 py-2"
+          placeholder="Enter a new username"
+        />
+      </div>
+
+      <!-- Current Email -->
+      <div>
+        <label class="block font-semibold mb-1">Current Email</label>
+        <input
+          type="email"
+          class="bg-gray-100 border border-gray-300 rounded w-full px-4 py-2"
+          value="{{ user[0]['email'] }}"
+          disabled
+        />
+      </div>
+
+      <!-- New Email -->
+      <div>
+        <label class="block font-semibold mb-1" for="email">
+          Change Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="off"
+          class="border rounded w-full px-4 py-2"
+          placeholder="Enter a new email"
+        />
+      </div>
+
+      <!-- Profile Picture -->
+      <div>
+        <label for="profile_picture" class="block font-semibold mb-1">
+          Profile Picture
+        </label>
+
+        {% if user[0]["profile_picture"] %}
+          <img
+            src="{{ url_for('static', filename = user[0]['profile_picture'].replace('static/', '')) }}"
+            alt="Current Profile Picture"
+            class="w-24 h-24 rounded-full object-cover mb-2"
+          />
+        {% else %}
+          <p class="text-gray-500 italic mb-2">No profile picture uploaded.</p>
+        {% endif %}
+
+        <input
+          type="file"
+          id="profile_picture"
+          name="profile_picture"
+          accept="image/*"
+          class="block w-full text-sm text-gray-700
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-lg file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-600 file:text-white
+                hover:file:bg-blue-700
+                transition
+                cursor-pointer
+                "
+                />
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 mt-6">
+        <button
+          type="submit"
+          class="
+            w-full sm:w-auto
+            bg-blue-600 
+            hover:bg-blue-700 
+            text-white 
+            text-center 
+            px-6 
+            py-2 
+            rounded 
+            shadow 
+            cursor-pointer 
+            disabled:opacity-50 
+            disabled:cursor-not-allowed
+            "
+            data-submit-button
+            disabled
+            >
+          💾 Save Changes
+        </button>
+
+        <a
+          href="{{ url_for('change_password') }}"
+          class="
+            w-full sm:w-auto
+            bg-yellow-500 
+            hover:bg-yellow-600 
+            text-white 
+            text-center 
+            px-6 
+            py-2 
+            rounded 
+            shadow 
+            cursor-pointer
+          "
+          >
+          🔐 Change Password
+        </a>
+
+        <a
+          href="{{ url_for('profile') }}"
+          class="
+            w-full sm:w-auto
+            bg-gray-400 
+            hover:bg-gray-500 
+            text-white 
+            text-center 
+            px-6 
+            py-2 
+            rounded 
+            shadow 
+            cursor-pointer
+          "
+          >
+          ❌ Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+
+
+  
+  <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
+  
+{% endblock %}

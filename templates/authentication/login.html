@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Login - Route Planner
+{% endblock %}
+
+{% block main %}    
+    <div 
+        class="
+            flex 
+            flex-col 
+            flex-wrap 
+            content-center 
+            justify-center 
+            my-[2%] 
+            p-6
+            max-w-lg 
+            mx-auto 
+            bg-white 
+            shadow-md 
+            rounded-lg
+            "
+            >
+        <h2 class="text-2xl font-bold mb-4">
+            🔐 Login
+        </h2>   
+
+        <form action="/login" method="post" class="space-y-4">
+            <div>
+                <input 
+                    class="border rounded w-full py-2 px-3"
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="🧍 Username"
+                    required
+                    autocomplete="off"
+                    autofocus
+                    >
+            </div>
+
+            <div>
+                <input 
+                    class="border rounded w-full py-2 px-3"
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="🔑 Password"
+                    required
+                    autocomplete="off"
+                    >
+            </div>
+
+            <button
+                type="submit"
+                class="
+                    w-full 
+                    bg-blue-600 
+                    text-white 
+                    px-4 
+                    py-2 
+                    rounded-lg 
+                    hover:bg-blue-700 
+                    cursor-pointer
+                    disabled:opacity-50 
+                    disabled:cursor-not-allowed
+                    "  
+                    data-submit-button
+                    disabled
+                    >
+                    🔓 Login
+            </button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p class="text-sm text-gray-600">
+                Don’t have an account?
+                <a 
+                    href="{{ url_for('register') }}" 
+                    class="text-blue-600 hover:underline font-medium"
+                >
+                Register here
+                </a>
+            </p>
+        </div>
+    </div>
+
+
+
+    <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
+{% endblock %}

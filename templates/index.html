@@ -1,0 +1,350 @@
+{% extends "base.html" %} 
+
+{% block title %} 
+
+  Home - Route Planner 
+
+{% endblock %}
+
+{% block main %}
+
+  <section class="flex flex-col-reverse lg:flex-row-reverse">
+    <!-- Leaflet Map Container -->
+    <div class="lg:w- [80%] w-full">
+      <div id="map" class="w-full h-[650px]"></div>
+
+      <!-- Hidden Input Fields For Storing Route-Related Data -->
+      <div class="hidden" id="map-data">
+        <input type="hidden" name="coordinates" />
+        <input type="hidden" name="elevation_profile" />
+      </div>
+    </div>
+
+    <!-- Form Route Container -->
+    <div class="lg:w-[20%] w-full">
+      <form 
+        class="
+          bg-white 
+          p-6 
+          shadow-mdh-full" 
+          id="route-form"
+          >
+        <div class="mb-6">
+          <h3 class="font-semibold mb-3">
+            Plan your Journey
+          </h3>
+          <!-- Mode Buttons for different transportation types -->
+          <div>
+            <button
+              type="button"
+              data-mode="walking"
+              class="
+                p-2 
+                border 
+                rounded-lg 
+                hover:bg-gray-50 
+                cursor-pointer"
+                >
+              🚶 Walk
+            </button>
+            <button
+              type="button"
+              data-mode="running"
+              class="
+                p-2 
+                border 
+                rounded-lg 
+                hover:bg-gray-50 
+                cursor-pointer"
+                >
+              🏃 Run
+            </button>
+            <button
+              type="button"
+              data-mode="cycling"
+              class="
+                p-2 
+                border 
+                rounded-lg 
+                hover:bg-gray-50 
+                cursor-pointer"
+                >
+              🚴 Bike
+            </button>
+            <button
+              type="button"
+              data-mode="driving-car"
+              class="
+                p-2 
+                border 
+                rounded-lg 
+                hover:bg-gray-50 
+                cursor-pointer"
+                >
+              🚗 Drive
+            </button>
+          </div>
+        </div>
+
+        <!-- Inputs for 'From' and 'To' addresses (required fields) -->
+        <div class="space-y-4">
+          <input
+            type="text"
+            id="from-input"
+            placeholder="From"
+            autocomplete="off"
+            required
+            class="w-full px-4 py-2 border rounded-lg"
+          />
+          <input
+            type="text"
+            id="to-input"
+            placeholder="Destination"
+            autocomplete="off"
+            required
+            class="w-full px-4 py-2 border rounded-lg"
+          />
+        </div>
+
+        <!-- Buttons for route planning actions -->
+        <div class="mt-6 space-y-2">
+          <button
+            type="submit"
+            class="
+              w-full 
+              bg-blue-600 
+              text-white 
+              px-4 
+              py-2 
+              rounded-lg 
+              hover:bg-blue-700 
+              cursor-pointer
+              disabled:opacity-50 
+              disabled:cursor-not-allowed
+              "
+            data-submit-button
+            disabled
+            >
+            Plan Route
+          </button>
+          <button
+            type="button"
+            id="draw-route-btn"
+            class="
+              w-full 
+              bg-gray-100 
+              px-4 
+              py-2 
+              rounded-lg 
+              hover:bg-gray-200 
+              cursor-pointer"
+              >
+            🖌️ Draw Route
+          </button>
+          <button
+            type="button"
+            id="clear-route-btn"
+            class="
+              w-full 
+              bg-red-100 
+              text-red-700 
+              px-4 
+              py-2 
+              rounded-lg 
+              hover:bg-red-200 
+              cursor-pointer"
+              >
+            🗑️ Clear Route
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+
+  <section class="relative"> 
+    <!-- Video Container -->
+    <div 
+      class="
+        relative 
+        w-full 
+        h-[500px] 
+        lg:h-screen 
+        lg:w-screen 
+        overflow-hidden"
+        >
+      <video
+        class="absolute inset-0 w-full h-full object-cover"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="/static/images/video-poster.png"
+        >
+        <source 
+          src="/static/video/routes_preview_2.mp4" 
+          type="video/mp4" 
+          />
+        <source 
+          src="/static/video/routes_preview_2.webm" 
+          type="video/webm" 
+          />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Content Overlay for Desktop -->
+    <div 
+      class="
+        absolute 
+        bottom-8 
+        left-8 
+        lg:block 
+        hidden 
+        text-white"
+        >
+      <h2 class="text-4xl font-bold mb-4">
+        Craft Your Perfect Adventure
+      </h2>
+      <p class="text-lg leading-relaxed mb-6">
+        Design personalized routes with elevation tracking, difficulty ratings,
+        <br />
+        and community-shared highlights. Save your favorite trails and <br />
+        share them with fellow adventurers.
+      </p>
+
+      <div class="space-x-4">
+        {% if not user_id %}
+          <a
+            href="/login"
+            class="
+              inline-block 
+              bg-blue-600 
+              text-white 
+              px-8 
+              py-3 
+              rounded-lg 
+              hover:bg-blue-700 
+              transition-transform 
+              transform hover:scale-105"
+            >
+            Start Planning →
+          </a>
+        {% else %}
+          <a
+            href="/routes"
+            class="
+              inline-block 
+              bg-green-600 
+              text-white 
+              px-8 
+              py-3 
+              rounded-lg 
+              hover:bg-green-700 
+              transition-transform 
+              transform 
+              hover:scale-105"
+            >
+            Explore Routes
+          </a>
+          <a
+            href="#route-form"
+            class="
+              inline-block 
+              bg-gray-900 
+              text-white 
+              px-8 
+              py-3 
+              rounded-lg 
+              hover:bg-gray-700 
+              transition-all"
+              >
+              New Route +
+              </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Content Overlay for Mobile -->
+    <div 
+      class="
+        lg:hidden 
+        text-center 
+        p-6 
+        bg-gray-100
+        "
+        >
+      <h2 class="text-2xl font-bold mb-4">
+        Craft Your Perfect Adventure
+      </h2>
+      <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+        Design personalized routes with elevation tracking, difficulty ratings,
+        and community-shared highlights. Save your favorite trails and share them
+        with fellow adventurers.
+      </p>
+
+      <div class="space-x-4">
+        {% if not user_id %}
+          <a
+            href="/register"
+            class="
+              inline-block 
+              bg-blue-600 
+              text-white 
+              px-8 
+              py-3 
+              rounded-lg 
+              hover:bg-blue-700 
+              transition-transform 
+              transform 
+              hover:scale-105"
+              >
+              Start Planning →
+            </a>
+        {% else %}
+          <a
+            href="/routes"
+            class="
+              inline-block 
+              bg-green-600 
+              text-white 
+              px-8 
+              py-3 
+              rounded-lg 
+              hover:bg-green-700 
+              transition-transform 
+              transform 
+              hover:scale-105"
+              >
+              Explore Routes
+            </a>
+            <a
+              href="/create"
+              class="
+                inline-block 
+                bg-gray-900 
+                text-white 
+                px-8 
+                py-3 
+                rounded-lg 
+                hover:bg-gray-700 
+                transition-all"
+                >
+                New Route +
+              </a>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- Leafletjs -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+  
+  <script src="{{ url_for('static', filename='js/main.js') }}" type="module"></script>
+  <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
+
+{% endblock %}

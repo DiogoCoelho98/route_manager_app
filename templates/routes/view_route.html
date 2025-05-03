@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}
+  View Route - Route Planner
+{% endblock %}
+
+{% block main %}
+
+<div 
+  class="
+    flex 
+    flex-col 
+    flex-wrap 
+    content-center 
+    justify-center 
+    my-[2%] 
+    p-6"
+    >
+  <div 
+    class="
+      flex 
+      flex-col 
+      lg:flex-row 
+      gap-6 
+      max-w-7xl 
+      w-full"
+      >
+      
+    <!-- Map Section (Left) -->
+    <div class="lg:w-[70%] w-full">
+      {% if route[0]["map_image_url"] %}
+        <img
+          src="{{ url_for('static', filename='images/routes/' + route[0]['map_image_url']) }}"
+          alt="Route Map"
+          class="
+            w-full 
+            h-[500px] 
+            object-cover 
+            rounded-lg 
+            shadow-md 
+            border 
+            border-gray-300"
+        />
+      {% else %}
+        <div 
+          class="
+            bg-gray-100 
+            h-[500px] 
+            flex items-center 
+            justify-center 
+            rounded-lg"
+            >
+          <p 
+            class="
+              text-gray-600 
+              italic"
+              >
+              No map image available for this route.
+          </p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Route Info (Right) -->
+    <div class="lg:w-[30%] w-full">
+      <div 
+        class="
+          bg-white 
+          p-6 
+          rounded-lg 
+          shadow-md 
+          border 
+          border-gray-200"
+          >
+        <h1 
+          class="
+            text-2xl 
+            font-bold 
+            mb-4"
+            >
+            {{ route[0]["name"] }}
+        </h1>
+
+        <p 
+          class="
+            text-sm 
+            text-gray-600 
+            mb-4 
+            whitespace-pre-line"
+            >
+          {{ route[0]["description"] }}
+        </p>
+
+        <div class="text-sm space-y-2">
+          {% if start_point %}
+            <p>
+              📍 <strong>Start:</strong> 
+              {{ start_point[0]|abs|round(4) }}° {{ 'N' if start_point[0] >= 0 else 'S' }}, 
+              {{ start_point[1]|abs|round(4) }}° {{ 'E' if start_point[1] >= 0 else 'W' }} 
+              <a 
+                href="https://maps.google.com/?q={{ start_point[0] }},{{ start_point[1] }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline font-medium"
+                >
+                View on Map
+              </a>
+            </p>
+          {% endif %}
+          {% if end_point %}
+            <p>
+              📍 <strong>End:</strong> 
+              {{ end_point[0]|abs|round(4) }}° {{ 'N' if end_point[0] >= 0 else 'S' }}, 
+              {{ end_point[1]|abs|round(4) }}° {{ 'E' if end_point[1] >= 0 else 'W' }} 
+              <a 
+                href="https://maps.google.com/?q={{ end_point[0] }},{{ end_point[1] }}" 
+                target="_blank" 
+                class="text-blue-600 hover:underline font-medium"
+                >
+                View on Map
+              </a>
+            </p>
+          {% endif %}
+          <p>
+            🛣️ <strong>Distance:</strong> 
+            {{ route[0]["total_distance"]|round(2) }} km
+          </p>
+          <p>
+            ⛰️ <strong>Elevation Gain:</strong> 
+            {{ route[0]["elevation_gain"]|round(0) }} m
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Comments Section -->
+  {% include 'routes/comments_section.html' %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Profile - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div class="my-[2%] p-6 max-w-4xl mx-auto">
+  
+    <div 
+      class="
+        grid 
+        grid-cols-1 
+        md:grid-cols-2 
+        gap-6 
+        bg-white 
+        p-6 
+        rounded-lg 
+        shadow-md 
+        border 
+        border-gray-200
+        "
+        >
+      
+      <!-- Left Column: Info + Actions -->
+      <div class="flex flex-col justify-center">
+        
+        <h2 
+          class="
+          text-2xl 
+          text-center
+          md:text-left
+          font-bold 
+          mb-6 
+          text-center
+          "
+          >
+          👤 User Profile
+        </h2>
+
+
+        <p 
+          class="
+            text-lg
+            text-center
+            md:text-left 
+            font-semibold 
+            mb-2
+            "
+            >
+            Username: {{ user[0]["username"] }}
+        </p>
+        <p 
+          class="
+            text-gray-600 
+            mb-6
+            text-center
+            md:text-left
+            "
+            >
+            Email: {{ user[0]["email"] }}
+        </p>
+
+        <div class="flex flex-col gap-3">
+          <a 
+            href="{{ url_for('my_routes') }}" 
+            class="
+              bg-blue-600 
+              hover:bg-blue-700 
+              text-white 
+              px-4 
+              py-2 
+              rounded-lg 
+              text-center
+              transition
+              "
+              >
+            🗺️ My Routes
+          </a>
+          
+          <a 
+            href="{{ url_for('edit_profile') }}"
+            class="
+              bg-yellow-400 
+              hover:bg-yellow-500 
+              text-white 
+              px-4 
+              py-2 
+              rounded-lg 
+              transition 
+              text-sm 
+              text-center
+              "
+              >
+            ✏️ Edit Profile
+          </a>
+
+          <a 
+            href="{{ url_for('logout') }}"
+            class="
+              bg-gray-300 
+              hover:bg-gray-400 
+              text-black 
+              px-4 
+              py-2 
+              rounded-lg 
+              transition 
+              text-sm 
+              text-center
+              "
+              >
+            🚪 Logout
+          </a>
+
+          <a 
+            href="{{ url_for('delete_account') }}"
+            class="
+              bg-red-600 
+              hover:bg-red-700 
+              text-white 
+              px-4 
+              py-2 
+              rounded-lg 
+              transition 
+              text-sm 
+              text-center
+              "
+              >
+            🗑️ Delete Account
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Profile Picture -->
+      {% if user[0]["profile_picture"] %}
+        <div class="flex items-center justify-center">
+          <img 
+            src="{{ url_for('static', filename=user[0]['profile_picture'].split('static/')[1]) }}" 
+            alt="Profile Picture" 
+            class="
+              w-52 
+              h-52 
+              rounded-full 
+              object-cover 
+              border 
+              border-gray-300
+              "
+              >
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

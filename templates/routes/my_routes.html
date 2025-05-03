@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}
+  My Routes - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div class="max-w-7xl mx-auto my-[2%] p-6">
+    <h2 class="text-2xl font-bold mb-4">
+      🧭 My Routes
+    </h2>
+
+    {% if routes %}
+      <div class="overflow-x-auto">
+
+        <table class="min-w-full bg-white border border-gray-200">
+          <thead class="bg-black text-white sticky top-0 z-10">
+            <tr>
+              <th class="py-3 px-4 text-center">Route Name</th>
+              <th class="py-3 px-4 text-center">Description</th>
+              <th class="py-3 px-4 text-center">Distance</th>
+              <th class="py-3 px-4 text-center">Elevation Gain</th>
+              <th class="py-3 px-4 text-center">Elevation Loss</th>
+              <th class="py-3 px-4 text-center hidden sm:table-cell">Max Elevation</th>
+              <th class="py-3 px-4 text-center hidden sm:table-cell">Min Elevation</th>
+              <th class="py-3 px-4 text-center hidden md:table-cell">Avg Elevation</th>
+              <th class="py-3 px-4 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for route in routes %}
+              <tr class="border-b hover:bg-blue-50 text-center">
+                <td class="py-2 px-4 font-semibold">{{ route.name }}</td>
+                <td class="py-2 px-4 truncate max-w-xs text-gray-700">
+                  {% if route.description %}
+                    {{ route.description }}
+                  {% else %}
+                    <span class="text-gray-500 italic">No description available</span>
+                  {% endif %}
+                </td>
+                <td class="py-2 px-4 font-semibold">{{ route.total_distance }} km</td>
+                <td class="py-2 px-4 font-semibold">{{ route.elevation_gain }} m</td>
+                <td class="py-2 px-4 font-semibold">{{ route.elevation_loss }} m</td>
+                <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.max_elevation }} m</td>
+                <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.min_elevation }} m</td>
+                <td class="py-2 px-4 font-semibold hidden md:table-cell">{{ route.avg_elevation }} m</td>
+                <td class="py-2 px-4 space-x-2 text-center">
+                  <a
+                    class="
+                      inline-block 
+                      bg-blue-500 
+                      hover:bg-blue-600 
+                      text-white 
+                      px-3 
+                      py-1 
+                      rounded 
+                      text-sm 
+                      my-2 
+                      mx-2
+                      "
+                    href="/route/{{ route.id }}">
+                    View
+                  </a>
+
+                  <a
+                    class="
+                      inline-block 
+                      bg-yellow-400 
+                      hover:bg-yellow-500 
+                      text-white 
+                      px-3 
+                      py-1 
+                      rounded 
+                      text-sm 
+                      my-2 
+                      mx-2
+                      "
+                    href="/route/{{ route.id }}/edit">
+                    Edit
+                  </a>
+
+                  <a
+                    class="
+                      inline-block 
+                      bg-red-500 
+                      hover:bg-red-600 
+                      text-white 
+                      px-3 
+                      py-1 
+                      rounded 
+                      text-sm 
+                      my-2 
+                      mx-2
+                      "
+                    href="/route/{{ route.id }}/delete">
+                    Delete
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      
+      </div>
+    {% else %}
+      <p class="text-center text-gray-500 mt-8">
+        You haven't created any routes yet.
+      </p>
+    {% endif %}
+
+    <div class="mt-8 flex justify-center">
+      <a
+        class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded shadow"
+        href="/">
+        + Create New Route
+      </a>
+    </div>
+  </div>
+{% endblock %}

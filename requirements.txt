@@ -1,0 +1,31 @@
+Project Overview
+--> Objective: Create a web app that allows users to plan, save, and share hiking and running routes.
+--> Backend: Python with Flask.
+--> Frontend: HTML, CSS, JavaScript.
+--> Database: SQLite.
+
+
+Core Features
+--> User Authentication
+    Description: Allow users to create accounts and log in.
+    Implementation: Use Flask-Login for user session management.
+
+--> Route Creation
+    Description: Users can create routes by drawing on a map or entering coordinates.
+    Implementation: Use Leaflet.js for map integration and allow users to input coordinates manually.
+
+--> Route Saving and Sharing
+    Description: Users can save routes to their profile and share them with others.
+    Implementation: Store routes in SQLite with user IDs for ownership tracking.    
+
+--> Route Details
+    Description: Display route details such as distance, elevation gain, and estimated time.
+    Implementation: Use APIs like OpenStreetMap or Google Maps to calculate route metrics.
+
+--> Community Features:
+    Description: Allow users to comment on routes or rate them.
+    Implementation: Add a comments section under each route and implement a rating system. 
+
+
+
+https://www.rac.co.uk/route-planner/  --> Model to design the homepage

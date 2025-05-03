@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Edit Route - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div 
+    class="
+      flex 
+      flex-col 
+      flex-wrap 
+      content-center 
+      justify-center 
+      my-[2%] 
+      p-6
+      "
+    >
+    <h2 
+      class="text-2xl font-bold mb-4"
+      >
+      ✏️ Edit Route
+    </h2>
+
+    <form 
+      class="max-w-lg" 
+      action="/route/{{ route[0]['id'] }}/edit" 
+      method="post"
+      >
+      
+      <div class="mb-4">
+        <label 
+          class="block font-bold mb-2" 
+          for="name"
+          >
+          Route Name
+        </label>
+        <input
+          class="border rounded w-full py-2 px-3"
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Route name"
+          value="{{ route[0]['name'] }}"
+          autocomplete="off"
+          required
+          autofocus
+        />
+      </div>
+
+      <div class="mb-4">
+        <label 
+          class="
+            block 
+            font-bold 
+            mb-2
+            " 
+          for="description"
+          >
+          Route Description
+        </label>
+        <textarea
+          class="
+            border 
+            rounded 
+            w-full 
+            py-2 
+            px-3 
+            resize-none
+            "
+          name="description"
+          id="description"
+          autocorrect="on"
+          rows="4"
+        >{{ route[0]['description'] }}</textarea>
+      </div>
+
+      <div class="hidden-inputs">
+        <input type="hidden" name="coordinates" value="{{ route[0]['coordinates'] }}" />
+        <input type="hidden" name="total_distance" value="{{ route[0]['total_distance'] }}" />
+        <input type="hidden" name="elevation_gain" value="{{ route[0]['elevation_gain'] }}" />
+        <input type="hidden" name="elevation_loss" value="{{ route[0]['elevation_loss'] }}" />
+        <input type="hidden" name="max_elevation" value="{{ route[0]['max_elevation'] }}" />
+        <input type="hidden" name="min_elevation" value="{{ route[0]['min_elevation'] }}" />
+        <input type="hidden" name="avg_elevation" value="{{ route[0]['avg_elevation'] }}" />
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4 mt-6">
+        <button
+          type="submit"
+          data-submit-button
+          disabled
+          class="
+            w-full sm:w-auto
+            bg-blue-600 
+            text-white 
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-blue-700 
+            transition 
+            cursor-pointer
+            disabled:opacity-50 
+            disabled:cursor-not-allowed
+            "
+        >
+          💾 Update Route
+        </button>
+
+        <a 
+          href="{{ url_for('all_routes') }}"
+          class="
+            w-full sm:w-auto
+            bg-gray-300 
+            text-black 
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-gray-400 
+            transition 
+            cursor-pointer
+            "
+        >
+          🔙 Back to All Routes
+        </a>
+      </div>
+    </form>
+  </div>
+
+
+  <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
+{% endblock %}

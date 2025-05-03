@@ -1,0 +1,93 @@
+  {% extends "base.html" %}
+
+  {% block title %}
+    Delete Comment - Route Planner
+  {% endblock %}
+
+  {% block main %}
+    <div 
+      class="
+        flex 
+        flex-col 
+        flex-wrap 
+        content-center 
+        justify-center 
+        my-[2%] 
+        p-6"
+      >
+      
+      <h2 class="text-2xl font-bold mb-4">
+        🗑️ Confirm Deletion
+      </h2>
+
+      <div 
+        class="
+          max-w-lg 
+          bg-white 
+          p-6 
+          rounded-lg 
+          shadow-md 
+          border 
+          border-gray-200"
+          >
+          <p class="mb-4 text-center text-gray-800">
+            Are you sure you want to <span class="font-bold">delete this comment?</span>
+            <br>
+            <span class="text-sm text-gray-600">This action cannot be undone.</span>
+          </p>
+        <p 
+          class="
+            mb-6 
+            italic 
+            text-gray-600 
+            border-l-4 
+            border-red-500 
+            pl-4"
+          >
+          "{{ comment[0]["comment"] }}"
+        </p>
+
+        <form 
+          action="{{ url_for('delete_comment', route_id=route_id, comment_id=comment_id) }}" 
+          method="post"
+          class="flex flex-col sm:flex-row gap-4"
+        >
+          <button 
+            type="submit"
+            class="
+              w-full
+              sm:w-auto
+              bg-red-600 
+              text-white 
+              text-center
+              px-4 
+              py-2 
+              rounded-lg 
+              hover:bg-red-700 
+              transition 
+              cursor-pointer"
+              >
+            ✅ Yes, delete
+          </button>
+
+          <a 
+            href="{{ url_for('view_route', route_id=route_id) }}"
+            class="
+              w-full 
+              sm:w-auto
+              bg-gray-300 
+              text-black
+              text-center 
+              px-4 
+              py-2 
+              rounded-lg 
+              hover:bg-gray-400 
+              transition 
+              cursor-pointer"
+              >
+            ❌ Cancel
+          </a>
+        </form>
+      </div>
+    </div>
+  {% endblock %}

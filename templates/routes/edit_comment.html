@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Edit Comment - Route Planner
+{% endblock %}
+
+{% block main %}
+  <div 
+    class="
+      flex 
+      flex-col 
+      flex-wrap 
+      content-center 
+      justify-center 
+      my-[2%] 
+      p-6
+      "
+    >
+    <h2 
+      class="text-2xl font-bold mb-4"
+      >
+      ✏️ Edit Comment
+    </h2>
+
+    <form 
+      class="max-w-lg" 
+      action="/route/{{ route_id }}/comment/{{ comment_id }}/edit"
+      method="post"
+      >
+      <div class="mb-4">
+        <label 
+          class="
+            block 
+            font-bold 
+            mb-2
+            " 
+          for="comment"
+          >
+          Your Comment
+        </label>
+        <textarea 
+          class="
+            border 
+            rounded 
+            w-full 
+            py-2 
+            px-3 
+            resize-none
+            required
+            " 
+          name="comment" 
+          id="comment" 
+          required
+          rows="4"
+        >{{ comment[0]["comment"] }}</textarea>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <button 
+          type="submit"
+          data-submit-button
+          disabled 
+          class="
+            w-full sm:w-auto
+            bg-blue-600 
+            text-white
+            text-center 
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-blue-700 
+            transition 
+            cursor-pointer
+            disabled:opacity-50 
+            disabled:cursor-not-allowed
+            "
+          >
+          💾 Save Changes
+        </button>
+      
+        <a 
+          href="{{ url_for('view_route', route_id = route_id) }}" 
+          class="
+            w-full sm:w-auto
+            bg-gray-300 
+            text-black
+            text-center 
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-gray-400 
+            transition 
+            cursor-pointer
+            "
+          >
+          ❌ Cancel
+        </a>
+      
+        <a 
+          href="{{ url_for('delete_comment', route_id = route_id, comment_id = comment_id) }}" 
+          class="
+            w-full sm:w-auto
+            bg-red-600 
+            text-white 
+            text-center
+            px-4 
+            py-2 
+            rounded-lg 
+            hover:bg-red-700 
+            transition 
+            cursor-pointer
+            "
+          >
+          🗑️ Delete
+        </a>
+      </div>
+    </form>
+  </div>
+
+
+
+  <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
+{% endblock %}

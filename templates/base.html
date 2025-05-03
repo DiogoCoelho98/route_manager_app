@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    {% block head %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} Route Planner {% endblock %}</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/static/css/styles.css" />
+    {% endblock %}
+  </head>
+
+  <body class="flex flex-col min-h-full">
+    <header class="bg-black text-white p-4 font-medium text-">
+      <nav>
+        <!-- Mobile Top Bar -->
+        <div class="flex items-center justify-between md:hidden">
+          <a href="/" class="shrink-0">
+            <img
+              class="w-50"
+              src="/static/images/uploads/logo_2_no_background.png"
+              alt="Route Planner logo"
+            />
+          </a>
+          <button id="mobile-menu-button">
+            <svg
+              class="cursor"
+              xmlns="http://www.w3.org/2000/svg"
+              x="0px"
+              y="0px"
+              width="20"
+              viewBox="0,0,256,256"
+              style="fill: #ffffff"
+            >
+              <g
+                fill="#ffffff"
+                fill-rule="nonzero"
+                stroke="none"
+                stroke-width="1"
+                stroke-linecap="butt"
+                stroke-linejoin="miter"
+                stroke-miterlimit="10"
+                stroke-dasharray=""
+                stroke-dashoffset="0"
+                font-family="none"
+                font-weight="none"
+                font-size="none"
+                text-anchor="none"
+                style="mix-blend-mode: normal"
+              >
+                <g transform="scale(5.12,5.12)">
+                  <path
+                    d="M0,7.5v5h50v-5zM0,22.5v5h50v-5zM0,37.5v5h50v-5z"
+                  ></path>
+                </g>
+              </g>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Menu Content -->
+        <div id="mobile-menu-content" class="hidden md:hidden mt-4">
+          <ul class="space-y-2">
+            {% if session.get('user_id') %}
+            <li><a href="/create" class="hover:underline">Create Route</a></li>
+            <li>
+              <a href="/routes" class="hover:underline">Community Routes</a>
+            </li>
+            <li><a href="/profile" class="hover:underline">My Account</a></li>
+            <li><a href="/logout" class="hover:underline">Logout</a></li>
+            {% else %}
+            <li><a href="/login" class="hover:underline">Login</a></li>
+            <li><a href="/register" class="hover:underline">Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex md:items-center">
+          <a href="/" class="shrink-0 mr-8">
+            <img
+              class="w-50"
+              src="/static/images/uploads/logo_2_no_background.png"
+              alt="Route Planner logo"
+            />
+          </a>
+          <ul class="flex items-center space-x-6 ml-auto">
+            {% if session.get('user_id') %}
+            <li><a href="/create" class="hover:underline">Create Route</a></li>
+            <li>
+              <a href="/routes" class="hover:underline">Community Routes</a>
+            </li>
+            <div class="flex-grow"></div>
+            <li>
+              <a href="/profile">
+                <button
+                  class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide"
+                >
+                  My Account
+                </button>
+              </a>
+            </li>
+            <li><a href="/logout" class="hover:underline">Logout</a></li>
+            {% else %}
+            <div class="flex-grow"></div>
+            <li>
+              <a href="/login">
+                <button
+                  class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide"
+                >
+                  Login
+                </button>
+              </a>
+            </li>
+            <li><a href="/register" class="hover:underline">Register</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main class="flex-grow">
+      {% block main %}
+      <!-- Main content -->
+      {% endblock %}
+    </main>
+
+    <footer class="bg-black text-white p-4">
+      <div class="container mx-auto">
+        <p class="text-left">&copy; 2025 Route Planner</p>
+      </div>
+    </footer>
+
+    <script>
+      document
+        .getElementById("mobile-menu-button")
+        .addEventListener("click", () => {
+          const mobile_menu = document.getElementById("mobile-menu-content");
+          mobile_menu.classList.toggle("hidden");
+        });
+    </script>
+  </body>
+</html>
