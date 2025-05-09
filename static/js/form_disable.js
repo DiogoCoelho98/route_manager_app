@@ -10,35 +10,35 @@
 
 
 document.addEventListener("DOMContentLoaded", () => 
-{
-  const forms = document.querySelectorAll("form");
-
-    forms.forEach((form) => 
-    {
-    const submit_button = form.querySelector("[data-submit-button]");
-    if (!submit_button) return;
-
-    const required_fields = form.querySelectorAll("input[required], textarea[required]");
-
-    const validate = () => 
-    {
-      let is_valid = true;
+  {
+    const forms = document.querySelectorAll("form");
+  
+      forms.forEach((form) => 
+      {
+      const submit_button = form.querySelector("[data-submit-button]");
+      if (!submit_button) return;
+  
+      const required_fields = form.querySelectorAll("input[required], textarea[required]");
+  
+      const validate = () => 
+      {
+        let is_valid = true;
+        required_fields.forEach((field) => 
+        {
+          if (field.value.trim() === "") 
+          {
+            is_valid = false;
+          }
+        });
+        
+        submit_button.disabled = !is_valid;
+      };
+  
       required_fields.forEach((field) => 
       {
-        if (field.value.trim() === "") 
-        {
-          is_valid = false;
-        }
+        field.addEventListener("input", validate);
       });
-      
-      submit_button.disabled = !is_valid;
-    };
-
-    required_fields.forEach((field) => 
-    {
-      field.addEventListener("input", validate);
+  
+      validate();
     });
-
-    validate();
   });
-});

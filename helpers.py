@@ -12,23 +12,19 @@ This module includes:
 """ 
 
 
-
 import json
 import os
+import openrouteservice
 import sqlite3
 from datetime import datetime
 from functools import wraps
 from math import atan2, cos, radians, sin, sqrt
-
 import requests
-
 from flask import flash, g, redirect, session
-
 from staticmap import CircleMarker, Line, StaticMap
 
 
 
-# ========================== Constants ==========================
 DATABASE = "route_manager.db"
 ELEVATION_API_URL = "https://api.opentopodata.org/v1/mapzen"
 elevation_cache = {}
@@ -115,7 +111,7 @@ def allowed_files(filename):
         bool: True if the extension is allowed, False otherwise.
     """
 
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
     return (
         "." in filename and 
         filename.rsplit(".", 1)[1].lower() in 
@@ -296,6 +292,35 @@ def process_route_internal(coordinates):
             "min_elevation": 0,
             "average_elevation": 0
         }
+
+def get_realistic_route(start, end, api_key, profile="foot-walking"):
+    """
+    Calls OpenRouteService Directions API to get a realistic route geometry.
+    Args:
+        start (dict): {'lat': float, 'lng': float}
+        end (dict): {'lat': float, 'lng': float}
+        api_key (str): ORS API key.
+        profile (str): Routing profile, e.g., 'foot-walking', 'driving-car'.
+    Returns:
+        list[dict]: List of {'lat': float, 'lng': float} points along the route.
+    """
+
+    client = openrouteservice.Client(key=api_key)
+    coords = [
+        [start["lng"], start["lat"]],
+        [end["lng"], end["lat"]]
+    ]
+    route = client.directions(coords, profile=profile, format="geojson")
+    geometry = route['features'][0]['geometry']['coordinates'] # list of [lng, lat] pairs
+ 
+    return [
+        {
+            "lat": lat, 
+            "lng": lng
+            }
+        for lng, lat in geometry
+    ]
+
 
 
 

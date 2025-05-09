@@ -80,17 +80,16 @@
             >
             {{ route[0]["name"] }}
         </h1>
-
-        <p 
-          class="
-            text-sm 
-            text-gray-600 
-            mb-4 
-            whitespace-pre-line"
-            >
-          {{ route[0]["description"] }}
-        </p>
-
+        
+        {% if route[0]["description"] %}
+          <p  class="text-gray-500 italic mb-4" >
+            {{ route[0]["description"] }}
+          </p>
+        {% else %}
+          <p class="text-gray-500 italic mb-4">
+            No description available
+          </p>
+        {% endif %}
         <div class="text-sm space-y-2">
           {% if start_point %}
             <p>
@@ -132,6 +131,7 @@
       </div>
     </div>
   </div>
+  
   
   <!-- Comments Section -->
   {% include 'routes/comments_section.html' %}

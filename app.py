@@ -11,11 +11,11 @@ This module includes:
     - API route for calculating route metrics from coordinates
 """
 
-# ========================== Imports ==========================
+
 import json
 import os
-
 from flask import (
+    current_app,
     Flask,
     flash,
     jsonify,
@@ -26,18 +26,17 @@ from flask import (
     url_for,
 )
 from flask_cors import CORS
-
 from helpers import (
     allowed_files,
     close_connection,
     generate_route_image,
+    get_realistic_route,
     login_required,
     parse_float,
     process_route_internal,
     query_db,
     validate_coordinates,
 )
-
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
@@ -55,8 +54,10 @@ UPLOAD_FOLDER = "static/images/users"
 ROUTE_IMAGE_FOLDER = "static/images/routes"
 ORS_API_KEY = "5b3ce3597851110001cf62486650b06bf6954682b8396f17343a1d68"
 
+# Flask app config
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ROUTE_IMAGE_FOLDER'] = ROUTE_IMAGE_FOLDER
+app.config['ORS_API_KEY'] = ORS_API_KEY
 
 if not os.path.exists(app.config['ROUTE_IMAGE_FOLDER']):
     os.makedirs(app.config['ROUTE_IMAGE_FOLDER'])
@@ -713,120 +714,60 @@ def delete_comment(route_id, comment_id):
 def get_route():
     """
     Processes incoming route coordinates and returns calculated route metrics.
-
-    Expects a JSON payload with a list of coordinate objects, 
-    each containing 'lat' and 'lng' keys.
-
-    Example request:
-    {
-        "coordinates": [
-            {"lat": 40.7128, "lng": -74.0060},
-            {"lat": 40.7138, "lng": -74.0070},
-            ...
-        ]
-    }
-
-    Returns:
-        JSON response containing:
-            - status: 'success' or 'error'
-            - coordinates: list of input coordinates (if successful)
-            - route details: total distance, elevation, etc. (via process_route_internal)
-            - error message (on failure)
+    If only two points are provided, fetches a realistic route using ORS.
     """
-
     try:
         data = request.get_json()
         coordinates = data.get('coordinates', [])
+        mode = data.get('mode', 'foot-walking')
 
-        # Ensure coordinates is a list of dictionaries with lat/lng keys
-        if (
-            coordinates and 
+        # Validate coordinates
+        if (not coordinates or not 
             all(isinstance(coord, dict) and 
-            'lat' in coord and 
-            'lng' in coord 
-            for coord in coordinates)
-            ):
-            route_details = process_route_internal(coordinates)
-
+                'lat' in coord and 
+                'lng' in coord 
+                for coord in coordinates)
+                ):
+            
             return jsonify({
-                "status": "success",
-                "coordinates": coordinates,
-                **route_details # Spread operator to include route details
-            })           
-        else:
-            return jsonify(
-                {
-                    "status": "error", 
-                    "message": "Invalid coordinates format"
-                    }), 400 
-        
+                "status": "error", 
+                "message": "Invalid coordinates format"
+                }), 400
+
+        # If only two points, fetch realistic route (ORS)
+        if len(coordinates) == 2:
+            api_key = current_app.config["ORS_API_KEY"]
+            start, end = coordinates
+            try:
+                route_geometry = get_realistic_route(start, end, api_key, profile = mode)
+                if not route_geometry or len(route_geometry) < 2:
+                    return jsonify({
+                        "status": "error",
+                        "message": "Failed to generate route geometry"
+                    }), 400
+                coordinates = route_geometry
+            
+            except Exception as e:
+                return jsonify({
+                    "status": "error",
+                    "message": f"Routing API failed: {str(e)}"
+                }), 500
+
+        # Process coordinates
+        route_details = process_route_internal(coordinates)
+
+        return jsonify({
+            "status": "success",
+            "coordinates": coordinates,
+            **route_details
+        })
+
     except Exception as e:
         print(f"Route error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
 
+
 if __name__ == "__main__":
     app.run(debug = True)
-
-
-
-# @app.route("/route", methods=["GET", "POST"])
-# @login_required
-# def create_route():
-#     """
-#     Allows users to create a new route by submitting start/end coordinates and a transport mode.
-#
-#     GET: Renders the route creation form.
-#     POST: Validates inputs, calls internal route processing, and saves route to DB.
-#     """
-#     if request.method == "POST":
-#         start_lat = parse_float(request.form.get("start_lat"))
-#         start_lon = parse_float(request.form.get("start_lon"))
-#         end_lat = parse_float(request.form.get("end_lat"))
-#         end_lon = parse_float(request.form.get("end_lon"))
-#         transport_mode = request.form.get("transport_mode")
-#
-#         if not validate_coordinates(start_lat, start_lon, end_lat, end_lon):
-#             flash("Invalid coordinates provided.", "error")
-#             return redirect(url_for("create_route"))
-#
-#         route_data = process_route_internal(
-#             start_lat,
-#             start_lon,
-#             end_lat,
-#             end_lon,
-#             transport_mode,
-#             ORS_API_KEY,
-#         )
-#
-#         if route_data is None:
-#             flash("Failed to create route. Please try again.", "error")
-#             return redirect(url_for("create_route"))
-#
-#         image_file_path = generate_route_image(
-#             route_data,
-#             app.config["ROUTE_IMAGE_FOLDER"],
-#         )
-#
-#         query_db(
-#             """INSERT INTO routes (user_id, start_lat, start_lon, end_lat, end_lon, transport_mode, distance, duration, image_path) 
-#             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-#             (
-#                 session["user_id"],
-#                 start_lat,
-#                 start_lon,
-#                 end_lat,
-#                 end_lon,
-#                 transport_mode,
-#                 route_data["distance"],
-#                 route_data["duration"],
-#                 image_file_path,
-#             ),
-#             commit=True,
-#         )
-#
-#         flash("Route successfully created!", "success")
-#         return redirect(url_for("my_routes"))
-#
-#     return render_template("routes/create_route.html")

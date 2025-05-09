@@ -9,9 +9,12 @@
 {% block main %}
 
   <section class="flex flex-col-reverse lg:flex-row-reverse">
-    <!-- Leaflet Map Container -->
+    <!-- Map Container -->
     <div class="lg:w- [80%] w-full">
-      <div id="map" class="w-full h-[650px]"></div>
+      <div 
+       id="map" 
+       class="w-full h-[650px]">
+      </div>
 
       <!-- Hidden Input Fields For Storing Route-Related Data -->
       <div class="hidden" id="map-data">
@@ -37,7 +40,7 @@
           <div>
             <button
               type="button"
-              data-mode="walking"
+              data-mode="foot-walking"
               class="
                 p-2 
                 border 
@@ -49,7 +52,7 @@
             </button>
             <button
               type="button"
-              data-mode="running"
+              data-mode="foot-walking"
               class="
                 p-2 
                 border 
@@ -61,7 +64,7 @@
             </button>
             <button
               type="button"
-              data-mode="cycling"
+              data-mode="cycling-regular"
               class="
                 p-2 
                 border 
@@ -161,7 +164,7 @@
     </div>
   </section>
 
-
+  
   <section class="relative"> 
     <!-- Video Container -->
     <div 

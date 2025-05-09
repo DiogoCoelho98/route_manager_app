@@ -5,30 +5,18 @@
 {% endblock %}
 
 {% block main %}    
-    <div 
-        class="
-            flex 
-            flex-col 
-            flex-wrap 
-            content-center 
-            justify-center 
-            my-[2%] 
-            p-6
-            max-w-lg 
-            mx-auto 
-            bg-white 
-            shadow-md 
-            rounded-lg
-            "
-            >
+    <div class="flex flex-col flex-wrap content-center justify-center my-[2%] p-6 max-w-lg mx-auto bg-white shadow-md rounded-lg">
         <h2 class="text-2xl font-bold mb-4">
             🔐 Login
-        </h2>   
-
-        <form action="/login" method="post" class="space-y-4">
+        </h2>
+        <!-- Credentials Form (Username / Password) --> 
+        <form 
+            action="/login" 
+            method="post" 
+            class="space-y-4"
+            >
             <div>
                 <input 
-                    class="border rounded w-full py-2 px-3"
                     type="text" 
                     id="username" 
                     name="username" 
@@ -36,50 +24,38 @@
                     required
                     autocomplete="off"
                     autofocus
+                    class="border rounded w-full py-2 px-3"
                     >
             </div>
-
             <div>
                 <input 
-                    class="border rounded w-full py-2 px-3"
                     type="password"
                     id="password"
                     name="password"
                     placeholder="🔑 Password"
                     required
                     autocomplete="off"
+                    class="border rounded w-full py-2 px-3"
                     >
             </div>
-
             <button
                 type="submit"
-                class="
-                    w-full 
-                    bg-blue-600 
-                    text-white 
-                    px-4 
-                    py-2 
-                    rounded-lg 
-                    hover:bg-blue-700 
-                    cursor-pointer
-                    disabled:opacity-50 
-                    disabled:cursor-not-allowed
-                    "  
-                    data-submit-button
-                    disabled
-                    >
-                    🔓 Login
+                data-submit-button
+                disabled
+                class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"  
+                >
+                🔓 Login
             </button>
         </form>
-        
+          
         <div class="mt-4 text-center">
             <p class="text-sm text-gray-600">
                 Don’t have an account?
                 <a 
                     href="{{ url_for('register') }}" 
-                    class="text-blue-600 hover:underline font-medium"
-                >
-                Register here
+                    class="text-blue-600 hover:underline font-medium cursor-pointer"
+                    >
+                    Register here
                 </a>
             </p>
         </div>

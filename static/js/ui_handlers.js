@@ -15,7 +15,8 @@ export const setSubmitLoadingState = (btn, isLoading) => {
     ? `<span class="inline-block animate-spin">⟳</span> Planning...`
     : "Plan Route";
 
-  if (!isLoading) {
+  if (!isLoading) 
+  {
     window.location.href = "/create";
   }
 };

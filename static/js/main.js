@@ -13,8 +13,6 @@
  - clearRoute: Clears existing drawn routes from the map
  - DrawingManager: Manages draw tools for route creation
  - injectCustomDrawStyles: Adds custom CSS for draw controls
-
- Runs once on DOMContentLoaded.
 */
 
 

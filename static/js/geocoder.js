@@ -13,30 +13,30 @@
 
 
 export const geocodeAddress = async (address) => 
-{
-  try 
   {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        address
-      )}`
-    );
-    const data = await response.json();
-
-    if (data.length > 0) 
+    try 
     {
-      return {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon),
-        display_name: data[0].display_name
-      };
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          address
+        )}`
+      );
+      const data = await response.json();
+  
+      if (data.length > 0) 
+      {
+        return {
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon),
+          display_name: data[0].display_name
+        };
+      }
+  
+      return null;
+    } 
+    catch (error) 
+    {
+      console.error(`Geocoding error for "${address}": ${error.message}`);
+      return null;
     }
-
-    return null;
-  } 
-  catch (error) 
-  {
-    console.error(`Geocoding error for "${address}": ${error.message}`);
-    return null;
-  }
-};
+  };

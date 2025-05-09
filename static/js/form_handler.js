@@ -15,13 +15,27 @@
 
 
 import { geocodeAddress } from "./geocoder.js";
-import { drawRoute, clearRoute, addRouteMarker } from "./route_manager.js";
+import { drawRoute, clearRoute } from "./route_manager.js";
 import { setSubmitLoadingState } from "./ui_handlers.js";
-import { getMap } from "./map_manager.js";
+import { getMap } from "./map_manager.js"; // Now being used currently
 
 
+let selected_mode = "foot-walking"; // Default mode
 
-  export const handleFormSubmit = async (e) => 
+// Listen for mode button clicks
+document.querySelectorAll("[data-mode]").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    selected_mode = btn.getAttribute("data-mode");
+    
+    document.querySelectorAll("[data-mode]").forEach(b => {
+      b.classList.remove("bg-blue-200")
+    });
+    btn.classList.add("bg-blue-200");
+  });
+});
+
+
+export const handleFormSubmit = async (e) => 
 {
   e.preventDefault();
 
@@ -48,8 +62,11 @@ import { getMap } from "./map_manager.js";
       throw new Error("Could not geocode one or both addresses");
     }
 
-    const map = getMap();
+    /*
+    This logic for now is not necessary
 
+    const map = getMap();
+    
     const start_marker = L.marker([start.lat, start.lng])
       .addTo(map)
       .bindPopup(`🚩 Start: ${start.display_name}`)
@@ -60,16 +77,18 @@ import { getMap } from "./map_manager.js";
       .addTo(map)
       .bindPopup(`🏁 Destination: ${end.display_name}`)
       .openPopup();
-    addRouteMarker(end_marker);
+    addRouteMarker(end_marker); 
+    */
 
     await drawRoute(
       [
         { lat: start.lat, lng: start.lng },
         { lat: end.lat, lng: end.lng },
       ],
-      "geocoded"
+      "geocoded",
+      selected_mode
     );
-
+    console.log(selected_mode);
     form.reset();
   } 
   catch (error) 
