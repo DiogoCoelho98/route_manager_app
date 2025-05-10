@@ -293,12 +293,11 @@ def process_route_internal(coordinates):
             "average_elevation": 0
         }
 
-def get_realistic_route(start, end, api_key, profile="foot-walking"):
+def get_realistic_route(points, api_key, profile="foot-walking"):
     """
     Calls OpenRouteService Directions API to get a realistic route geometry.
     Args:
-        start (dict): {'lat': float, 'lng': float}
-        end (dict): {'lat': float, 'lng': float}
+        points (list): List of {'lat': float, 'lng': float} dicts (start, waypoints, end)
         api_key (str): ORS API key.
         profile (str): Routing profile, e.g., 'foot-walking', 'driving-car'.
     Returns:
@@ -306,20 +305,15 @@ def get_realistic_route(start, end, api_key, profile="foot-walking"):
     """
 
     client = openrouteservice.Client(key=api_key)
-    coords = [
-        [start["lng"], start["lat"]],
-        [end["lng"], end["lat"]]
-    ]
-    route = client.directions(coords, profile=profile, format="geojson")
-    geometry = route['features'][0]['geometry']['coordinates'] # list of [lng, lat] pairs
- 
+    coords = [[p["lng"], p["lat"]] for p in points] 
+    route = client.directions(coords, profile = profile, format = "geojson")
+    geometry = route['features'][0]['geometry']['coordinates']
+    
     return [
-        {
-            "lat": lat, 
-            "lng": lng
-            }
+        {"lat": lat, "lng": lng}
         for lng, lat in geometry
     ]
+
 
 
 

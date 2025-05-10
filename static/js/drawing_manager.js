@@ -131,7 +131,8 @@ export const DrawingManager = {
    * Handler for when the user finishes drawing a route.
    * Converts the drawn polyline into coordinates and draws the route on the map.
    */
-  async handleDrawComplete(e) {
+  async handleDrawComplete(e) 
+  {
     const layer = e.layer;
     this.drawnItems.addLayer(layer);
 
@@ -140,7 +141,8 @@ export const DrawingManager = {
       lng: coord.lng,
     }));
 
-    if (coords.length) {
+    if (coords.length) 
+    {
       const startCoord = coords[0];
       L.marker([startCoord.lat, startCoord.lng]).addTo(this.map);
     }
@@ -151,12 +153,17 @@ export const DrawingManager = {
       "#route-form button[type='submit']"
     );
 
-    try {
+    try 
+    {
       setSubmitLoadingState(submitBtn, true);
-      await drawRoute(coords, "drawn");
-    } catch (err) {
+      await drawRoute(coords, "drawn"); // Missing select mode
+    } 
+    catch (err) 
+    {
       console.error("Error drawing route:", err);
-    } finally {
+    } 
+    finally 
+    {
       setSubmitLoadingState(submitBtn, false);
     }
   },

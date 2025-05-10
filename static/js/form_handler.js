@@ -31,7 +31,10 @@ document.querySelectorAll("[data-mode]").forEach((btn) =>
   });
 });
 
+
 const waypoint_container = document.getElementById("waypoints-container");
+
+
 
 export const handleFormSubmit = async (e) => 
 {
@@ -53,7 +56,8 @@ export const handleFormSubmit = async (e) =>
   setSubmitLoadingState(submit_btn, true);
   clearRoute();
 
-  try {
+  try 
+  {
     const all_addresses = [from, ...waypoints, to];
     const geocoded = await Promise.all(all_addresses.map(address => geocodeAddress(address)));
 

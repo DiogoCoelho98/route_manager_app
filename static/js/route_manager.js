@@ -27,7 +27,8 @@ let route_markers = [];
  * Sends the coordinates to `/get-route` endpoint and uses the response
  * to draw a Leaflet polyline. Also stores the response data in session storage.
  */
-export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-walking") => {
+export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-walking") => 
+{
   try 
   {
     const response = await fetch("/get-route", {
@@ -36,7 +37,8 @@ export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-wal
       body: JSON.stringify(
         { 
           coordinates, 
-          mode 
+          mode,
+          type
         }),
     });
 

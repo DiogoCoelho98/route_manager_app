@@ -708,43 +708,47 @@ def delete_comment(route_id, comment_id):
 
 
 # ===========================================================
-#                    Map Data Route
+#                    Route Data Profile
 # ===========================================================
 @app.route('/get-route', methods=['POST'])
 def get_route():
     """
     Processes incoming route coordinates and returns calculated route metrics.
-    If only two points are provided, fetches a realistic route using ORS.
+    Uses realistic routing for geocoded routes (with or without waypoints),
+    and treats drawn routes as custom polylines.
     """
+
     try:
         data = request.get_json()
         coordinates = data.get('coordinates', [])
         mode = data.get('mode', 'foot-walking')
+        route_type = data.get('type', 'geocoded')  # default to geocoded
 
         # Validate coordinates
         if (not coordinates or not 
             all(isinstance(coord, dict) and 
                 'lat' in coord and 
                 'lng' in coord 
-                for coord in coordinates)
-                ):
-            
+                for coord in coordinates)):
             return jsonify({
                 "status": "error", 
                 "message": "Invalid coordinates format"
-                }), 400
+            }), 400
 
-        # If only two points, fetch realistic route (ORS)
-        if len(coordinates) == 2:
+        if route_type == "geocoded":
             api_key = current_app.config["ORS_API_KEY"]
-            start, end = coordinates
             try:
-                route_geometry = get_realistic_route(start, end, api_key, profile = mode)
+                route_geometry = get_realistic_route(
+                    coordinates,
+                    api_key,
+                    profile = mode
+                )
                 if not route_geometry or len(route_geometry) < 2:
                     return jsonify({
                         "status": "error",
                         "message": "Failed to generate route geometry"
                     }), 400
+                
                 coordinates = route_geometry
             
             except Exception as e:
@@ -752,8 +756,8 @@ def get_route():
                     "status": "error",
                     "message": f"Routing API failed: {str(e)}"
                 }), 500
-
-        # Process coordinates
+            
+        # If drawn (polyline)
         route_details = process_route_internal(coordinates)
 
         return jsonify({
@@ -765,6 +769,7 @@ def get_route():
     except Exception as e:
         print(f"Route error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
 
 
 
