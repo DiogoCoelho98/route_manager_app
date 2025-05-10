@@ -9,7 +9,6 @@
  *    - geocodeAddress()      : Converts address strings into lat/lng.
  *    - drawRoute(), clearRoute(), addRouteMarker(): Route management.
  *    - setSubmitLoadingState(): Manages UI loading state.
- *    - getMap()              : Retrieves the Leaflet map instance.
  ********************************************************************/
 
 
@@ -17,23 +16,22 @@
 import { geocodeAddress } from "./geocoder.js";
 import { drawRoute, clearRoute } from "./route_manager.js";
 import { setSubmitLoadingState } from "./ui_handlers.js";
-import { getMap } from "./map_manager.js"; // Now being used currently
 
 
 let selected_mode = "foot-walking"; // Default mode
 
-// Listen for mode button clicks
-document.querySelectorAll("[data-mode]").forEach((btn) => {
+
+
+document.querySelectorAll("[data-mode]").forEach((btn) => 
+{
   btn.addEventListener("click", (e) => {
     selected_mode = btn.getAttribute("data-mode");
-    
-    document.querySelectorAll("[data-mode]").forEach(b => {
-      b.classList.remove("bg-blue-200")
-    });
-    btn.classList.add("bg-blue-200");
+    document.querySelectorAll("[data-mode]").forEach(b => b.classList.remove("bg-gray-200"));
+    btn.classList.add("bg-gray-200");
   });
 });
 
+const waypoint_container = document.getElementById("waypoints-container");
 
 export const handleFormSubmit = async (e) => 
 {
@@ -42,54 +40,36 @@ export const handleFormSubmit = async (e) =>
   const form = e.target;
   const from = document.getElementById("from-input").value.trim();
   const to = document.getElementById("to-input").value.trim();
+
+  const waypoint_inputs = waypoint_container.querySelectorAll(".waypoint-input");
+  const waypoints = Array.from(waypoint_inputs)
+    .map(input => input.value.trim())
+    .filter(val => val);
+
   const submit_btn = form.querySelector('button[type="submit"]');
 
   if (!from || !to) return;
-  
+
   setSubmitLoadingState(submit_btn, true);
   clearRoute();
 
-  try 
-  {
-    // Geocode both locations in parallel
-    const [start, end] = await Promise.all([
-      geocodeAddress(from),
-      geocodeAddress(to),
-    ]);
+  try {
+    const all_addresses = [from, ...waypoints, to];
+    const geocoded = await Promise.all(all_addresses.map(address => geocodeAddress(address)));
 
-    if (!start || !end)
+    if (geocoded.some(result => !result)) 
     {
-      throw new Error("Could not geocode one or both addresses");
+      throw new Error("Could not geocode one or more addresses.");
     }
 
-    /*
-    This logic for now is not necessary
+    const coordinates = geocoded.map(location => ({
+      lat: location.lat,
+      lng: location.lng,
+    }));
 
-    const map = getMap();
-    
-    const start_marker = L.marker([start.lat, start.lng])
-      .addTo(map)
-      .bindPopup(`🚩 Start: ${start.display_name}`)
-      .openPopup();
-    addRouteMarker(start_marker);
-
-    const end_marker = L.marker([end.lat, end.lng])
-      .addTo(map)
-      .bindPopup(`🏁 Destination: ${end.display_name}`)
-      .openPopup();
-    addRouteMarker(end_marker); 
-    */
-
-    await drawRoute(
-      [
-        { lat: start.lat, lng: start.lng },
-        { lat: end.lat, lng: end.lng },
-      ],
-      "geocoded",
-      selected_mode
-    );
-    console.log(selected_mode);
+    await drawRoute(coordinates, "geocoded", selected_mode);
     form.reset();
+    waypoint_container.innerHTML = ""; // Clear waypoints after submit
   } 
   catch (error) 
   {

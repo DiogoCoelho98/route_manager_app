@@ -174,11 +174,10 @@ def calculate_distance(coords):
 # ===========================================================
 #                    Elevation Calculations 
 # ===========================================================
-def get_elevations(coordinates):
+def get_elevations(coordinates, batch_size = 100):
     """
     Fetches elevation data for a list of coordinates using batch requests.
-
-    Coordinates should be a list of dicts: [{"lat": ..., "lng": ...}, ...]
+    Splits requests into batches to avoid exceeding URL length limits.
     Caches results in `elevation_cache` to avoid redundant requests.
     """
     uncached = [
@@ -190,24 +189,25 @@ def get_elevations(coordinates):
     if not uncached:
         return  # All elevations already cached
 
-    # Prepare API query
-    locations_str = "|".join(f"{lat},{lng}" for lat, lng in uncached)
+    for i in range(0, len(uncached), batch_size):
+        batch = uncached[i:i + batch_size]
+        locations_str = "|".join(f"{lat},{lng}" for lat, lng in batch)
+        try:
+            response = requests.get(ELEVATION_API_URL, params={"locations": locations_str})
+            response.raise_for_status()
+            data = response.json()
+            
+            results = data.get("results", [])
+            for (lat, lng), result in zip(batch, results):
+                elevation = result.get("elevation", 0)
+                elevation_cache[(lat, lng)] = elevation
+                print(f"Fetched and cached elevation for {lat}, {lng}: {elevation}")
+        
+        except Exception as e:
+            print(f"Elevation API batch error: {e}")
+            for lat, lng in batch:
+                elevation_cache[(lat, lng)] = 0
 
-    try:
-        response = requests.get(ELEVATION_API_URL, params={"locations": locations_str})
-        response.raise_for_status()
-        data = response.json()
-
-        results = data.get("results", [])
-        for (lat, lng), result in zip(uncached, results):
-            elevation = result.get("elevation", 0)
-            elevation_cache[(lat, lng)] = elevation
-            print(f"Fetched and cached elevation for {lat}, {lng}: {elevation}")
-
-    except Exception as e:
-        print(f"Elevation API batch error: {e}")
-        for lat, lng in uncached:
-            elevation_cache[(lat, lng)] = 0  # Fallback to 0 on failure
 
 
 def calculate_elevation_stats(elevation_profile):
@@ -260,8 +260,8 @@ def process_route_internal(coordinates):
     try:
         distance = calculate_distance(coordinates)
 
-        # Fetch all elevations in a single batch
-        get_elevations(coordinates)
+        # Fetch all elevations in batches of 100
+        get_elevations(coordinates, batch_size = 100)
 
         elevation_profile = [{
             "lat": coord["lat"],

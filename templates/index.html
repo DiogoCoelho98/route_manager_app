@@ -36,6 +36,7 @@
           <h3 class="font-semibold mb-3">
             Plan your Journey
           </h3>
+
           <!-- Mode Buttons for different transportation types -->
           <div>
             <button
@@ -45,8 +46,9 @@
                 p-2 
                 border 
                 rounded-lg 
-                hover:bg-gray-50 
-                cursor-pointer"
+                hover:bg-gray-200 
+                cursor-pointer
+                bg-gray-200 "
                 >
               🚶 Walk
             </button>
@@ -57,7 +59,7 @@
                 p-2 
                 border 
                 rounded-lg 
-                hover:bg-gray-50 
+                hover:bg-gray-200 
                 cursor-pointer"
                 >
               🏃 Run
@@ -69,7 +71,7 @@
                 p-2 
                 border 
                 rounded-lg 
-                hover:bg-gray-50 
+                hover:bg-gray-200 
                 cursor-pointer"
                 >
               🚴 Bike
@@ -81,7 +83,7 @@
                 p-2 
                 border 
                 rounded-lg 
-                hover:bg-gray-50 
+                hover:bg-gray-200 
                 cursor-pointer"
                 >
               🚗 Drive
@@ -99,6 +101,9 @@
             required
             class="w-full px-4 py-2 border rounded-lg"
           />
+
+          <div id="waypoints-container"></div>
+          
           <input
             type="text"
             id="to-input"
@@ -107,6 +112,14 @@
             required
             class="w-full px-4 py-2 border rounded-lg"
           />
+          
+          <button
+            type="button"
+            id="add-waypoint-btn"
+            class="text-blue-600 hover:underline font-medium cursor-pointer"
+            >
+            Add Destination
+          </button>
         </div>
 
         <!-- Buttons for route planning actions -->
@@ -348,6 +361,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
   
   <script src="{{ url_for('static', filename='js/main.js') }}" type="module"></script>
+  <script src="{{ url_for('static', filename='js/add_destination.js') }}"></script>
   <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
 
 {% endblock %}
