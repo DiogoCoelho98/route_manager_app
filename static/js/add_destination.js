@@ -43,7 +43,10 @@ add_waypoint_btn.addEventListener("click", () =>
     const index = waypoint_container.querySelectorAll(".waypoint-input").length;
 
     if (index < MAX_WAYPOINTS) {
-        waypoint_container.appendChild(create_waypoint_input(index));
+        const new_input_wrapper = create_waypoint_input(index);
+        waypoint_container.appendChild(new_input_wrapper);
+          
+        new_input_wrapper.querySelector("input").focus();
     }
 
     // Disable button if limit

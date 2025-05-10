@@ -201,7 +201,6 @@ def get_elevations(coordinates, batch_size = 100):
             for (lat, lng), result in zip(batch, results):
                 elevation = result.get("elevation", 0)
                 elevation_cache[(lat, lng)] = elevation
-                print(f"Fetched and cached elevation for {lat}, {lng}: {elevation}")
         
         except Exception as e:
             print(f"Elevation API batch error: {e}")
