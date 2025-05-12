@@ -44,6 +44,7 @@ export const initMap = () => {
             position.coords.latitude,
             position.coords.longitude,
           ];
+
           map.setView(user_coords, zoom_levels);
           L.marker(user_coords)
             .addTo(map)
@@ -57,7 +58,9 @@ export const initMap = () => {
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
-    } else {
+    } 
+    else 
+    {
       map.setView(default_coords, zoom_levels);
       resolve(map);
     }

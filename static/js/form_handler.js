@@ -73,7 +73,7 @@ export const handleFormSubmit = async (e) =>
 
     await drawRoute(coordinates, "geocoded", selected_mode);
     form.reset();
-    waypoint_container.innerHTML = ""; // Clear waypoints after submit
+    waypoint_container.innerHTML = "";
   } 
   catch (error) 
   {

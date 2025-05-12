@@ -94,20 +94,30 @@ def register():
     """
 
     if request.method == "POST":
-        username = request.form.get("username").strip()
-        email = request.form.get("email").strip()
-        password = request.form.get("password").strip()
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
 
         if not username or not email or not password:
             flash("All fields are required.", "error")
-            redirect("/register")
+            return redirect("/register")
+
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.", "error")
+            return redirect("/register")
+
+        # (Optional) Add more advanced checks:
+        # import re
+        # if not re.match(r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$', password):
+        #     flash("Password must be at least 8 characters and contain both letters and numbers.", "error")
+        #     return redirect("/register")
 
         # Check if username / email already exists 
         existing_user = query_db(
             "SELECT * from users WHERE username = ? OR email = ?",
             (username, email)
         )
-        
+
         if existing_user:
             flash("Username or email already exists!", "error")
             return redirect("/register")
@@ -120,13 +130,14 @@ def register():
             (username, email, password, profile_picture) VALUES 
             (?, ?, ?, ?)""",
             (username, email, hashed_password, default_image),
-            commit = True
+            commit=True
         )
 
-        flash("Registration successfull! Please log in.", "success")
+        flash("Registration successful! Please log in.", "success")
         return redirect("/login")
 
     return render_template("authentication/register.html")
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -237,13 +248,13 @@ def edit_profile():
             query_db(
                 "UPDATE users SET username = ?, email = ?, profile_picture = ? WHERE id = ?",
                 (username, email, file_path, session["user_id"]),
-                commit=True
+                commit = True
             )
         else:
             query_db(
                 "UPDATE users SET username = ?, email = ? WHERE id = ?",
                 (username, email, session["user_id"]),
-                commit=True
+                commit = True
             )
 
         flash("Profile updated successfully!", "success")
@@ -251,76 +262,148 @@ def edit_profile():
 
     return render_template("/profile/edit_profile.html", user = user)
 
-@app.route("/profile/delete", methods = ["GET", "POST"])
+@app.route("/profile/delete", methods=["GET", "POST"])
 @login_required
 def delete_account():
     """
-    Deletes the user's account and associated routes.
+    Deletes the user's account and all associated data:
+    - Comments made by the user
+    - Comments on the user's routes
+    - The user's    
+    - The user's route images
+    - The user's profile picture
+    - The user record
 
     GET: Renders a confirmation form.
     POST: Executes deletion.
     """
 
     if request.method == "POST":
+        user_id = session["user_id"]
+
+        # Delete comments made by the user 
         query_db(
-            "DELETE FROM users WHERE id = ?",
-            (session["user_id"],),
+            "DELETE FROM comments WHERE user_id = ?", 
+            (user_id,), 
+            commit=True
+        )
+
+        #  Get all routes (IDs and map_image_url) owned by the user 
+        user_routes = query_db(
+            "SELECT id, map_image_url FROM routes WHERE user_id = ?", 
+            (user_id,)
+        )
+
+        #  Delete comments of those routes and remove associated images 
+        for route in user_routes:
+            rid = route[0]  # id
+            map_image_url = route[1]  # map_image_url
+            # Delete comments on this route
+            query_db(
+                "DELETE FROM comments WHERE route_id = ?", 
+                (rid,), 
+                commit=True
+            )
+
+            # Delete associated image file if it exists
+            if map_image_url:
+                image_path = os.path.join(app.config['ROUTE_IMAGE_FOLDER'], map_image_url)
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+                else:
+                    print(f"File does not exist: {image_path}", flush=True)
+
+        #  Delete the user's profile picture if it exists 
+        user = query_db(
+            "SELECT profile_picture FROM users WHERE id = ?",
+            (user_id,)
+        )
+
+        if user and user[0][0]:  # profile_picture path
+            profile_picture_path = user[0][0]
+            # Only delete if it's not a default avatar
+            if os.path.exists(profile_picture_path):
+                os.remove(profile_picture_path)
+            else:
+                print(f"Profile picture does not exist: {profile_picture_path}")
+
+        #  Delete the user's routes 
+        query_db(
+            "DELETE FROM routes WHERE user_id = ?", 
+            (user_id,), 
             commit = True
         )
 
-        # Delete associated routes 
+        #  Delete the user record 
         query_db(
-            "DELETE FROM routes WHERE user_id = ?",
-            (session["user_id"], ),
+            "DELETE FROM users WHERE id = ?", 
+            (user_id,), 
             commit = True
         )
 
         session.pop("user_id", None)
-        flash("Your account has been deleted successfully!", "success")
+        flash("Your account have been deleted successfully!", "success")
         return redirect(url_for("index"))
-    
+
     return render_template("/profile/delete_profile.html")
 
-@app.route("/profile/change-password", methods = ["GET", "POST"])
+
+
+
+@app.route("/profile/change-password", methods=["GET", "POST"])
 @login_required
 def change_password():
     """
-    Allows the user to change their password 
-    after verifying the current one.
+    Allows the user to change their password after verifying the current one.
     """
-
     if request.method == "POST":
-        current_password = request.form.get("current_password")
-        new_password = request.form.get("new_password")
-        confirm_password = request.form.get("confirm_password")
+        current_password = request.form.get("current_password", "").strip()
+        new_password = request.form.get("new_password", "").strip()
+        confirm_password = request.form.get("confirm_password", "").strip()
 
-        if not current_password or not new_password:
+        if not current_password or not new_password or not confirm_password:
             flash("All fields are required.", "error")
             return redirect(url_for("change_password"))
-        
+
         user = query_db(
-            "SELECT * FROM users WHERE id = ?",
+            "SELECT password FROM users WHERE id = ?",
             (session["user_id"],)
         )
 
-        if not user or not check_password_hash(user[0]["password"], current_password):
+        if not user:
+            flash("User not found.", "error")
+            return redirect(url_for("profile"))
+
+        # Verify current password
+        if not check_password_hash(user[0]["password"], current_password):
             flash("Current password is incorrect.", "error")
             return redirect(url_for("change_password"))
 
+        # Check new password matches confirmation
         if new_password != confirm_password:
             flash("New passwords do not match.", "error")
             return redirect(url_for("change_password"))
         
+        if len(new_password) < 8:
+            flash("New password must be at least 8 characters long.", "error")
+            return redirect(url_for("change_password"))
+
+        # Prevent reusing the old password
+        if check_password_hash(user[0]["password"], new_password):
+            flash("New password must be different from the current password.", "error")
+            return redirect(url_for("change_password"))
+
         query_db(
             "UPDATE users SET password = ? WHERE id = ?",
             (generate_password_hash(new_password), session["user_id"]),
-            commit = True
+            commit=True
         )
-        
+
         flash("Password updated successfully!", "success")
         return redirect(url_for("profile"))
-    
+
     return render_template("/profile/change_password.html")
+
 
 @app.route("/my-routes")
 @login_required
@@ -392,7 +475,7 @@ def create_route():
                 commit = True
                 )
         
-        flash("Route created successfully! Now, define the route.", "success")
+        flash("Route created successfully!", "success")
         return redirect("/routes")
 
     return render_template("routes/create_route.html")
@@ -550,25 +633,30 @@ def delete_route(route_id):
     map_image_url = route[0]["map_image_url"] or ""
     
     if request.method == "POST":
+        # Delete associated comments
+        query_db(
+            "DELETE FROM comments WHERE route_id = ?",
+            (route_id,),
+            commit = True
+        )
+
+        # Delete associated image file
         if map_image_url:
             image_path = os.path.join(app.config['ROUTE_IMAGE_FOLDER'], map_image_url)
-
             if os.path.exists(image_path):
-                os.remove(image_path) 
-                flash(f"Route image '{map_image_url}' has been deleted.", "success")
-            else:
-                flash(f"Image file '{map_image_url}' not found on disk at '{image_path}'.", "warning")
-        
+                os.remove(image_path)
+
         query_db(
             """DELETE FROM routes WHERE 
             id = ? AND 
             user_id = ?""",
             (route_id, session["user_id"]),
-            commit = True
+            commit=True
         )
-        
+
         flash("Route deleted successfully!", "success")
         return redirect(url_for("all_routes"))
+
     
     return render_template(
         "routes/delete_route.html", 

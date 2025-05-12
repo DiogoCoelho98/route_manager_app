@@ -62,7 +62,6 @@
         <div id="mobile-menu-content" class="hidden md:hidden mt-4">
           <ul class="space-y-2">
             {% if session.get('user_id') %}
-            <li><a href="/create" class="hover:underline">Create Route</a></li>
             <li>
               <a href="/routes" class="hover:underline">Community Routes</a>
             </li>
@@ -86,33 +85,35 @@
           </a>
           <ul class="flex items-center space-x-6 ml-auto">
             {% if session.get('user_id') %}
-            <li><a href="/create" class="hover:underline">Create Route</a></li>
             <li>
               <a href="/routes" class="hover:underline">Community Routes</a>
             </li>
+
             <div class="flex-grow"></div>
+            
             <li>
               <a href="/profile">
-                <button
-                  class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide"
-                >
+                <button class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide">
                   My Account
                 </button>
               </a>
             </li>
-            <li><a href="/logout" class="hover:underline">Logout</a></li>
-            {% else %}
-            <div class="flex-grow"></div>
             <li>
-              <a href="/login">
-                <button
-                  class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide"
-                >
-                  Login
-                </button>
-              </a>
+              <a href="/logout" class="hover:underline">Logout</a>
             </li>
-            <li><a href="/register" class="hover:underline">Register</a></li>
+            {% else %}
+              <div class="flex-grow"></div>
+
+              <li>
+                <a href="/login">
+                  <button class="bg-white text-black px-4 py-2 rounded-lg hover:bg-gray-100 cursor-pointer tracking-wide">
+                    Login
+                  </button>
+                </a>
+              </li>
+              <li>
+                <a href="/register" class="hover:underline">Register</a>
+              </li>
             {% endif %}
           </ul>
         </div>
@@ -120,9 +121,36 @@
     </header>
 
     <main class="flex-grow">
+
+      <!-- Flash Messages: Responsive, Centered, and Floating -->
+      <div id="flash-messages"
+          class="fixed left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs px-2"
+          style="top: 56px;"
+          aria-live="polite">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mb-4 px-4 py-3 rounded shadow-lg flex items-start alert alert-{{ category }} transition-opacity duration-300
+                          {% if category == 'success' %}bg-green-100 text-green-800 border border-green-300
+                          {% elif category == 'error' %}bg-red-100 text-red-800 border border-red-300
+                          {% else %}bg-gray-100 text-gray-800 border border-gray-300{% endif %}">
+                <span class="flex-1 text-base">{{ message }}</span>
+                <button 
+                  type="button" 
+                  class="ml-4 text-xl font-bold leading-none focus:outline-none close-flash cursor-pointer" 
+                  aria-label="Close">
+                  &times;
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+
       {% block main %}
       <!-- Main content -->
       {% endblock %}
+
     </main>
 
     <footer class="bg-black text-white p-4">
@@ -131,6 +159,8 @@
       </div>
     </footer>
 
+
+    <!-- Responsive Navbar -->
     <script>
       document
         .getElementById("mobile-menu-button")
@@ -139,5 +169,25 @@
           mobile_menu.classList.toggle("hidden");
         });
     </script>
+
+    <!-- Flash messages -->
+    <script>
+      // Close flash message on click
+      document.querySelectorAll('.close-flash').forEach(btn => {
+        btn.addEventListener('click', function() {
+          this.parentElement.style.opacity = '0';
+          setTimeout(() => this.parentElement.remove(), 300);
+        });
+      });
+
+      // Auto-dismiss after 3 seconds
+      setTimeout(() => {
+        document.querySelectorAll('.alert').forEach(el => {
+          el.style.opacity = '0';
+          setTimeout(() => el.remove(), 300);
+        });
+      }, 3000);
+    </script>
+
   </body>
 </html>
