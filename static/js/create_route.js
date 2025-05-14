@@ -1,5 +1,5 @@
 /**
- * On page load: Pre-processing of route data before form submission
+ * Processing of route data before form submission
  * on the "Create Route" page. It reads route metadata stored in sessionStorage
  * (by the route planning feature), formats it appropriately, and injects it
  * into hidden form fields to be sent to the backend (flask).
@@ -34,11 +34,12 @@ document.addEventListener("DOMContentLoaded", () =>
         }
       }
   
-      // Transform array of coordinate objects into [lat, lng] pairs
-      const coord_arr = route_data.coordinates.map((coord) => [
+      const keyPoints = route_data.keyPoints || route_data.coordinates;
+      const coord_arr = keyPoints.map((coord) => [
         coord.lat,
         coord.lng,
       ]);
+
       
       document.getElementById("coordinates").value = JSON.stringify(coord_arr);
       document.getElementById("totalDistance").value = route_data.total_distance || "";

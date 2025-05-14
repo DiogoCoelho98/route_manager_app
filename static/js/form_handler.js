@@ -12,7 +12,6 @@
  ********************************************************************/
 
 
-
 import { geocodeAddress } from "./geocoder.js";
 import { drawRoute, clearRoute } from "./route_manager.js";
 import { setSubmitLoadingState } from "./ui_handlers.js";
@@ -63,19 +62,31 @@ export const handleFormSubmit = async (e) =>
     {
       throw new Error("Could not geocode one or more addresses.");
     }
-
-    const coordinates = geocoded.map(location => ({
+ 
+    const key_points = geocoded.map(location => ({
       lat: location.lat,
       lng: location.lng,
     }));
 
     await drawRoute(
-      coordinates,          
-      coordinates.slice(1, -1),  // waypoints only (excludes start and end points)
+      key_points,          
+      key_points.slice(1, -1),  // waypoints only (excludes start and end points)
       "geocoded",
-      selected_mode
+      selected_mode,
+      key_points
     );
-    
+
+    const route_data = JSON.parse(sessionStorage.getItem("routeData"));
+    route_data.keyPoints = key_points;
+    sessionStorage.setItem("routeData", JSON.stringify(route_data));
+
+
+    const coordinatesInput = form.querySelector('input[name="coordinates"]');
+    if (coordinatesInput) 
+    {
+      coordinatesInput.value = JSON.stringify(key_points);
+    }
+
     form.reset();
     waypoint_container.innerHTML = "";
   } 
@@ -88,3 +99,4 @@ export const handleFormSubmit = async (e) =>
     setSubmitLoadingState(submit_btn, false);
   }
 };
+

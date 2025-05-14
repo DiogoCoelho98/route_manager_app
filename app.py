@@ -846,6 +846,7 @@ def get_route():
         # Geocoded mode (routing)
         if route_type == "geocoded":
             api_key = current_app.config["ORS_API_KEY"]
+            
             try:
                 route_geometry = get_realistic_route(
                     coordinates,
@@ -857,7 +858,9 @@ def get_route():
                         "status": "error",
                         "message": "Failed to generate route geometry"
                     }), 400
+                
                 coordinates = route_geometry
+
             except Exception as e:
                 return jsonify({
                     "status": "error",

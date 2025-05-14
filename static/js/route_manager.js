@@ -25,7 +25,7 @@ let route_type = null;
  * Sends the coordinates to `/get-route` endpoint and uses the response
  * to draw a Leaflet polyline. Also stores the response data in session storage.
  */
-export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode = "foot-walking") => 
+export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode = "foot-walking", key_points = null) => 
 {
   try 
   {
@@ -41,6 +41,11 @@ export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode 
     });
 
     const route_data = await response.json();
+
+    if (key_points) 
+    {
+    route_data.keyPoints = key_points;
+    }
 
     const map = getMap();
     
