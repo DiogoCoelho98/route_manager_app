@@ -292,7 +292,7 @@ def process_route_internal(coordinates):
             "average_elevation": 0
         }
 
-def get_realistic_route(points, api_key, profile="foot-walking"):
+def get_realistic_route(points, api_key, profile = "foot-walking"):
     """
     Calls OpenRouteService Directions API to get a realistic route geometry.
     Args:
@@ -303,13 +303,16 @@ def get_realistic_route(points, api_key, profile="foot-walking"):
         list[dict]: List of {'lat': float, 'lng': float} points along the route.
     """
 
-    client = openrouteservice.Client(key=api_key)
+    client = openrouteservice.Client(key = api_key)
     coords = [[p["lng"], p["lat"]] for p in points] 
     route = client.directions(coords, profile = profile, format = "geojson")
     geometry = route['features'][0]['geometry']['coordinates']
     
     return [
-        {"lat": lat, "lng": lng}
+        {
+            "lat": lat, 
+            "lng": lng
+            }
         for lng, lat in geometry
     ]
 
@@ -359,7 +362,7 @@ def validate_coordinates(coordinates_json):
 
 
 # ===========================================================
-#                    Get Route Country 
+#                    Route Country 
 # ===========================================================
 def get_country_from_coords(lat, lng):
     """
@@ -421,11 +424,9 @@ def generate_route_image(validated_coords, waypoints = None, save_folder = 'stat
     start_lat, start_lng = validated_coords[0]
     m.add_marker(CircleMarker((start_lng, start_lat), 'green', 12))
 
-
-    print(f"Waypoints:{waypoints}", flush=True)
     if waypoints:
         for lat, lng in waypoints:
-            m.add_marker(CircleMarker((lng, lat), 'yellow', 12))
+            m.add_marker(CircleMarker((lng, lat), 'orange', 9))
 
     end_lat, end_lng = validated_coords[-1]
     m.add_marker(CircleMarker((end_lng, end_lat), 'red', 12))
@@ -441,6 +442,7 @@ def generate_route_image(validated_coords, waypoints = None, save_folder = 'stat
 
     os.makedirs(save_folder, exist_ok=True)
     image.save(file_path, format='PNG')
+    
     return filename
 
 

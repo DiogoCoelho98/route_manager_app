@@ -12,7 +12,7 @@ function create_waypoint_input(index)
 
     const input = document.createElement("input");
     input.type = "text";
-    input.placeholder = `Waypoint ${index + 1}`;
+    input.placeholder = `📍 Waypoint ${index + 1}`;
     input.className = "w-full px-4 py-2 border rounded-lg waypoint-input";
     input.autocomplete = "off";
 

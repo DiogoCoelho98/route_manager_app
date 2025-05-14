@@ -1,17 +1,23 @@
 <!DOCTYPE html>
+
 <html lang="en" class="h-full">
+  
   <head>
     {% block head %}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %} Route Planner {% endblock %}</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="/static/css/styles.css" />
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>
+          {% block title %} 
+            Route Planner 
+          {% endblock %}
+      </title>
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+      <link rel="stylesheet" href="/static/css/styles.css" />
     {% endblock %}
   </head>
 
   <body class="flex flex-col min-h-full">
-    <header class="bg-black text-white p-4 font-medium text-">
+    <header class="bg-black text-white p-4 font-medium">
       <nav>
         <!-- Mobile Top Bar -->
         <div class="flex items-center justify-between md:hidden">
@@ -62,14 +68,22 @@
         <div id="mobile-menu-content" class="hidden md:hidden mt-4">
           <ul class="space-y-2">
             {% if session.get('user_id') %}
-            <li>
-              <a href="/routes" class="hover:underline">Community Routes</a>
-            </li>
-            <li><a href="/profile" class="hover:underline">My Account</a></li>
-            <li><a href="/logout" class="hover:underline">Logout</a></li>
+              <li>
+                <a href="/routes" class="hover:underline">Community Routes</a>
+              </li>
+              <li>
+                <a href="/profile" class="hover:underline">My Account</a>
+              </li>
+              <li>
+                <a href="/logout" class="hover:underline">Logout</a>
+              </li>
             {% else %}
-            <li><a href="/login" class="hover:underline">Login</a></li>
-            <li><a href="/register" class="hover:underline">Register</a></li>
+              <li>
+                  <a href="/login" class="hover:underline">Login</a>
+                </li>
+              <li>
+                <a href="/register" class="hover:underline">Register</a>
+              </li>
             {% endif %}
           </ul>
         </div>
@@ -120,13 +134,16 @@
       </nav>
     </header>
 
+
     <main class="flex-grow">
 
       <!-- Flash Messages: Responsive, Centered, and Floating -->
-      <div id="flash-messages"
-          class="fixed left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs px-2"
-          style="top: 56px;"
-          aria-live="polite">
+      <div 
+        id="flash-messages"
+        class="fixed left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs px-2"
+        style="top: 56px;"
+        aria-live="polite"
+        >
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -153,41 +170,64 @@
 
     </main>
 
-    <footer class="bg-black text-white p-4">
-      <div class="container mx-auto">
-        <p class="text-left">&copy; 2025 Route Planner</p>
+
+    <footer class="bg-black text-white py-8">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+        
+        <div class="flex items-center space-x-3 mb-4 md:mb-0">
+          <a href="/">
+            <span class="text-lg font-semibold tracking-wide">Route Planner</span>
+          </a>
+          </div>
+
+        <!-- Sitemap Links -->
+        <ul class="flex flex-col md:flex-row items-center md:items-center gap-y-2 md:gap-y-0 gap-x-0 md:gap-x-8 text-sm font-medium">
+          <li><a href="#" class="hover:underline">About</a></li>
+          <li><a href="#" class="hover:underline">Features</a></li>
+          <li><a href="/routes" class="hover:underline">Community Routes</a></li>
+          <li><a href="#" class="hover:underline">Contact</a></li>
+          <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+        </ul>
+
+
+        <!-- Social Icons -->
+        <div class="flex space-x-4 mt-4 md:mt-0">
+          <a 
+            href="https://www.linkedin.com/in/diogo-borges-coelho/" 
+            aria-label="LinkedIn" 
+            class="hover:text-blue-500"
+            target="_blank"
+            >
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11.75 20.5h-3v-11h3v11zm-1.5-12.5c-.97 0-1.75-.78-1.75-1.75s.78-1.75 1.75-1.75 1.75.78 1.75 1.75-.78 1.75-1.75 1.75zm15.25 12.5h-3v-5.5c0-1.38-.03-3.16-1.93-3.16-1.94 0-2.24 1.51-2.24 3.06v5.6h-3v-11h2.89v1.5h.04c.4-.76 1.37-1.56 2.83-1.56 3.03 0 3.59 2 3.59 4.59v6.47z"/>
+            </svg>
+          </a>
+          <a 
+            href="https://github.com/DiogoCoelho98" 
+            aria-label="GitHub" 
+            class="hover:text-gray-400"
+            target="_blank"
+            >
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.415-4.033-1.415-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.084-.729.084-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.762-1.605-2.665-.305-5.466-1.334-5.466-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.527.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 0 1 3.003-.404c1.018.005 2.045.138 3.003.404 2.291-1.553 3.297-1.23 3.297-1.23.653 1.649.242 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.803 5.624-5.475 5.921.429.37.823 1.096.823 2.21v3.285c0 .322.218.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 mt-6 border-t border-gray-800 pt-4 text-sm text-gray-400 flex flex-col md:flex-row justify-between items-center">
+        <span>&copy; 2025 Route Planner. All rights reserved.</span>
+        <span class="mt-2 md:mt-0">Made with <span class="text-red-500">&hearts;</span> for explorers.</span>
       </div>
     </footer>
 
 
+
     <!-- Responsive Navbar -->
-    <script>
-      document
-        .getElementById("mobile-menu-button")
-        .addEventListener("click", () => {
-          const mobile_menu = document.getElementById("mobile-menu-content");
-          mobile_menu.classList.toggle("hidden");
-        });
-    </script>
-
+    <script src="{{ url_for('static', filename='js/responsive_navbar.js') }}"></script>
     <!-- Flash messages -->
-    <script>
-      // Close flash message on click
-      document.querySelectorAll('.close-flash').forEach(btn => {
-        btn.addEventListener('click', function() {
-          this.parentElement.style.opacity = '0';
-          setTimeout(() => this.parentElement.remove(), 300);
-        });
-      });
-
-      // Auto-dismiss after 3 seconds
-      setTimeout(() => {
-        document.querySelectorAll('.alert').forEach(el => {
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 300);
-        });
-      }, 3000);
-    </script>
+    <script src="{{ url_for('static', filename='js/flash_messages.js') }}"></script>
 
   </body>
 </html>

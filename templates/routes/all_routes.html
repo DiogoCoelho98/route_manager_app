@@ -16,9 +16,9 @@
               <th class="py-3 px-4 text-center">Route Name</th>
               <th class="py-3 px-4 text-center">Description</th>
               <th class="py-3 px-4 text-center">Route Distance</th>
-              <th class="py-3 px-4 text-center hidden md:table-cell">Avg. Elevation</th>
+              <th class="py-3 px-4 text-center">Avg. Elevation</th>
               <th class="py-3 px-4 text-center">Country</th>   
-              <th class="py-3 px-4 text-center hidden sm:table-cell">Author</th>
+              <th class="py-3 px-4 text-center">Author</th>
               <th class="py-3 px-4 text-center">Actions</th>
             </tr>
           </thead>
@@ -37,9 +37,9 @@
                   {% endif %}
                 </td>
                 <td class="py-2 px-4 font-semibold">{{ route.total_distance }} km</td>
-                <td class="py-2 px-4 font-semibold hidden md:table-cell">{{ route.avg_elevation }} m</td>
+                <td class="py-2 px-4 font-semibold">{{ route.avg_elevation }} m</td>
                 <td class="py-2 px-4 font-semibold">{{ route.country }}</td>
-                <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.username }}</td>
+                <td class="py-2 px-4 font-semibold">{{ route.username }}</td>
                 <td class="py-2 px-4 space-x-2 text-center">
                   <a
                     class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm my-2 mx-2"

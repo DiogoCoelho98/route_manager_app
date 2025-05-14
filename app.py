@@ -351,8 +351,6 @@ def delete_account():
     return render_template("/profile/delete_profile.html")
 
 
-
-
 @app.route("/profile/change-password", methods=["GET", "POST"])
 @login_required
 def change_password():
@@ -870,7 +868,7 @@ def get_route():
         elif route_type == "drawn":
             waypoints = []
 
-        # Calculate metrics
+        # Calculate route metrics
         route_details = process_route_internal(coordinates)
 
         # Generate static map image

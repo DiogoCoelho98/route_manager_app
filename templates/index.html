@@ -1,70 +1,67 @@
 {% extends "base.html" %} 
 
 {% block title %} 
-
   Home - Route Planner 
-
 {% endblock %}
 
 {% block main %}
+  <section class="flex flex-col-reverse lg:flex-row-reverse">
+    
+    <div class="lg:w- [80%] w-full">
 
-    <section class="flex flex-col-reverse lg:flex-row-reverse">
+      <!-- Map Container -->
+      <div id="map" class="w-full h-[650px]"></div>
+
+      <!-- Hidden Input Fields For Storing Route-Related Data -->
+      <div class="hidden" id="map-data">
+        <input type="hidden" name="coordinates" />
+        <input type="hidden" name="elevation_profile" />
+      </div>
       
-      <div class="lg:w- [80%] w-full">
+    </div>
 
-        <!-- Map Container -->
-        <div id="map" class="w-full h-[650px]"></div>
+    <div class="lg:w-[20%] w-full">
 
-        <!-- Hidden Input Fields For Storing Route-Related Data -->
-        <div class="hidden" id="map-data">
-          <input type="hidden" name="coordinates" />
-          <input type="hidden" name="elevation_profile" />
+      <!-- Form Route Container -->
+      <form class="bg-white p-6 shadow-mdh-full" id="route-form">
+
+        <div class="mb-6">
+          <h3 class="font-semibold mb-3">Plan your Journey</h3>
+
+          <!-- Mode Buttons for different transportation types -->
+          <div>
+            <button type="button" data-mode="foot-walking" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer bg-gray-200">🚶 Walk</button>
+            <button type="button" data-mode="foot-walking" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🏃 Run</button>
+            <button type="button" data-mode="cycling-regular" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🚴 Bike</button>
+            <button type="button" data-mode="driving-car" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🚗 Drive</button>
+          </div>
         </div>
-        
-      </div>
 
-      <div class="lg:w-[20%] w-full">
+        <!-- Inputs for 'From' and 'To' addresses (required fields) + Waypoints -->
+        <div class="space-y-4">
+          <input type="text" id="from-input" placeholder="🚩 From" autocomplete="off" autofocus required class="w-full px-4 py-2 border rounded-lg"/>
+          <div id="waypoints-container"></div>
+          <input type="text" id="to-input" placeholder="🗺️ Destination" autocomplete="off" required class="w-full px-4 py-2 border rounded-lg"/>
+          <button type="button" id="add-waypoint-btn" class="text-blue-600 hover:underline font-medium cursor-pointer">Add Destination</button>
+        </div>
 
-        <!-- Form Route Container -->
-        <form class="bg-white p-6 shadow-mdh-full" id="route-form">
+        <!-- Buttons for route planning actions -->
+        <div class="mt-6 space-y-2">
+          <button type="submit" data-submit-button disabled class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Plan Route</button>
+          <button type="button" id="draw-route-btn" class="w-full bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 cursor-pointer">🖌️ Draw Route</button>
+          <button type="button" id="clear-route-btn" class="w-full bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 cursor-pointer">🗑️ Clear Route</button>
+        </div>  
 
-          <div class="mb-6">
-            <h3 class="font-semibold mb-3">Plan your Journey</h3>
+      </form>
 
-            <!-- Mode Buttons for different transportation types -->
-            <div>
-              <button type="button" data-mode="foot-walking" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer bg-gray-200">🚶 Walk</button>
-              <button type="button" data-mode="foot-walking" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🏃 Run</button>
-              <button type="button" data-mode="cycling-regular" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🚴 Bike</button>
-              <button type="button" data-mode="driving-car" class="p-2 border rounded-lg hover:bg-gray-200 cursor-pointer">🚗 Drive</button>
-            </div>
-          </div>
-
-          <!-- Inputs for 'From' and 'To' addresses (required fields) -->
-          <div class="space-y-4">
-            <input type="text" id="from-input" placeholder="From" autocomplete="off" autofocus required class="w-full px-4 py-2 border rounded-lg"/>
-            <div id="waypoints-container"></div>
-            <input type="text" id="to-input" placeholder="Destination" autocomplete="off" required class="w-full px-4 py-2 border rounded-lg"/>
-            <button type="button" id="add-waypoint-btn" class="text-blue-600 hover:underline font-medium cursor-pointer">Add Destination</button>
-          </div>
-
-          <!-- Buttons for route planning actions -->
-          <div class="mt-6 space-y-2">
-            <button type="submit" data-submit-button disabled class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">Plan Route</button>
-            <button type="button" id="draw-route-btn" class="w-full bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 cursor-pointer">🖌️ Draw Route</button>
-            <button type="button" id="clear-route-btn" class="w-full bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 cursor-pointer">🗑️ Clear Route</button>
-          </div>  
-
-        </form>
-
-      </div>
-    </section>
+    </div>
+  </section>
 
   
-
   <section class="relative"> 
+
     <!-- Video Container -->
-    <div class="relative w-full h-[500px] lg:h-screen lg:w-screen overflow-hidden">
+    <div class="relative w-full h-[500px] lg:h-screen overflow-hidden">
       
       <video
         autoplay
@@ -94,7 +91,6 @@
       </p>
 
       <div class="space-x-4">
-
         {% if not user_id %}
           <a
             href="/login"
@@ -116,7 +112,6 @@
             New Route +
           </a>
         {% endif %}
-
       </div>
 
     </div>
@@ -156,6 +151,7 @@
       </div>
       
     </div>
+
   </section>
 
 
@@ -165,8 +161,9 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
   
+  <!-- Route form submission scripts --> 
   <script src="{{ url_for('static', filename='js/main.js') }}" type="module"></script>
   <script src="{{ url_for('static', filename='js/add_destination.js') }}"></script>
   <script src="{{ url_for('static', filename='js/form_disable.js') }}"></script>
-
+  
 {% endblock %}
