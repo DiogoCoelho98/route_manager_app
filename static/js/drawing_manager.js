@@ -13,6 +13,19 @@ import { setSubmitLoadingState } from "./ui_handlers.js";
 
 
 
+let selected_mode = "foot-walking"; // Default mode
+
+document.querySelectorAll("[data-mode]").forEach((btn) => 
+{
+  btn.addEventListener("click", () => {
+    selected_mode = btn.getAttribute("data-mode");
+    document.querySelectorAll("[data-mode]").forEach(b => b.classList.remove("bg-gray-200"));
+    btn.classList.add("bg-gray-200");
+  });
+});
+
+
+
 export const DrawingManager = { 
   map: null,
   drawnItems: null,
@@ -67,13 +80,16 @@ export const DrawingManager = {
     this.showActionButtons();
   },
 
-  cleanupDrawing() {
-    if (this.currentDrawControl) {
+  cleanupDrawing() 
+  {
+    if (this.currentDrawControl) 
+    {
       this.map.removeControl(this.currentDrawControl);
       this.currentDrawControl = null;
     }
 
-    if (this.activeDrawInstance) {
+    if (this.activeDrawInstance) 
+    {
       this.activeDrawInstance.disable();
       this.activeDrawInstance = null;
     }
@@ -83,6 +99,11 @@ export const DrawingManager = {
     this.hideActionButtons();
 
     clearRoute();
+
+    document.getElementById("from-input").value = "";
+    document.getElementById("to-input").value = "";
+
+    window.validateForm(document.getElementById("route-form"));
   },
 
   updateButtonStates(isActive) {
@@ -155,8 +176,14 @@ export const DrawingManager = {
 
     try 
     {
+      
       setSubmitLoadingState(submitBtn, true);
-      await drawRoute(coords, "drawn"); // Missing select mode
+      await drawRoute(
+        coords, 
+        [],
+        "drawn",
+      selected_mode
+    );
     } 
     catch (err) 
     {

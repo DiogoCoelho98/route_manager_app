@@ -20,11 +20,9 @@ import { setSubmitLoadingState } from "./ui_handlers.js";
 
 let selected_mode = "foot-walking"; // Default mode
 
-
-
 document.querySelectorAll("[data-mode]").forEach((btn) => 
 {
-  btn.addEventListener("click", (e) => {
+  btn.addEventListener("click", () => {
     selected_mode = btn.getAttribute("data-mode");
     document.querySelectorAll("[data-mode]").forEach(b => b.classList.remove("bg-gray-200"));
     btn.classList.add("bg-gray-200");
@@ -71,7 +69,13 @@ export const handleFormSubmit = async (e) =>
       lng: location.lng,
     }));
 
-    await drawRoute(coordinates, "geocoded", selected_mode);
+    await drawRoute(
+      coordinates,          
+      coordinates.slice(1, -1),  // waypoints only (excludes start and end points)
+      "geocoded",
+      selected_mode
+    );
+    
     form.reset();
     waypoint_container.innerHTML = "";
   } 

@@ -1,44 +1,41 @@
 /**
- * Disables form submission buttons until all required fields are filled.
- * 
- * - Selects all forms in the document.
- * - For each form, checks for a button marked with [data-submit-button].
- * - Monitors all required input and textarea fields.
- * - Enables the submit button onlyw hen all required fields are non-empty.
+ * Validates the form to ensure required fields are filled.
+ * Enables/disables the submit button based on field content.
  */
+function validateForm(form) 
+{
+  let submit_button = form.querySelector("[data-submit-button]");
+  let required_fields = form.querySelectorAll("input[required], textarea[required]");
 
-
-
-document.addEventListener("DOMContentLoaded", () => 
+  let is_valid = true;
+  
+  for (let i = 0; i < required_fields.length; i++) 
   {
-    const forms = document.querySelectorAll("form");
-  
-      forms.forEach((form) => 
-      {
-      const submit_button = form.querySelector("[data-submit-button]");
-      if (!submit_button) return;
-  
-      const required_fields = form.querySelectorAll("input[required], textarea[required]");
-  
-      const validate = () => 
-      {
-        let is_valid = true;
-        required_fields.forEach((field) => 
-        {
-          if (field.value.trim() === "") 
-          {
-            is_valid = false;
-          }
-        });
-        
-        submit_button.disabled = !is_valid;
-      };
-  
-      required_fields.forEach((field) => 
-      {
-        field.addEventListener("input", validate);
-      });
-  
-      validate();
+    if (required_fields[i].value.trim() === "") 
+    {
+      is_valid = false;
+    }
+  }
+
+  submit_button.disabled = !is_valid;
+}
+
+
+
+document.addEventListener("DOMContentLoaded", function() 
+{
+  let forms = document.querySelectorAll("form");
+
+  for (let i = 0; i < forms.length; i++) 
+  {
+    forms[i].addEventListener("input", function() 
+    {
+      validateForm(this);
     });
-  });
+    validateForm(forms[i]); // Initial validation on page load
+  }
+});
+
+
+
+window.validateForm = validateForm;

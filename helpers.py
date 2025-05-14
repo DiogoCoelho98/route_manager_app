@@ -315,9 +315,6 @@ def get_realistic_route(points, api_key, profile="foot-walking"):
 
 
 
-
-
-
 # ===========================================================
 #                    Coordinate Validation 
 # ===========================================================
@@ -360,6 +357,40 @@ def validate_coordinates(coordinates_json):
     return [] 
 
 
+
+# ===========================================================
+#                    Get Route Country 
+# ===========================================================
+def get_country_from_coords(lat, lng):
+    """
+    Uses Nominatim to reverse geocode a coordinate to a country name.
+    Returns the country name as a string, or None if not found.
+    """
+
+    try:
+        url = "https://nominatim.openstreetmap.org/reverse"
+        params = {
+            "lat": lat,
+            "lon": lng,
+            "format": "json",
+            "zoom": 5,  # Country-level
+            "addressdetails": 1,
+        }
+        headers = {
+            "User-Agent": "RouteAppManager/1.0 (your@email.com)"
+        }
+
+        resp = requests.get(url, params = params, headers = headers, timeout = 5)
+        resp.raise_for_status()
+        data = resp.json()
+
+        return data.get("address", {}).get("country")
+    
+    except Exception as e:
+        print(f"Reverse geocoding failed: {e}")
+        return None
+
+
     
 # ===========================================================
 #                    Utility: Float Parsing  
@@ -375,26 +406,28 @@ def parse_float(value):
 # ===========================================================
 #                    Route Image Generation
 # ===========================================================
-def generate_route_image(validated_coords, save_folder='static/images/routes'):
+def generate_route_image(validated_coords, waypoints = None, save_folder = 'static/images/routes'):
     """
-    Generates a static map image of a route with start and end markers.
+    Generates a static map image of a route with start, end, and waypoint markers.
+    validated_coords: list of (lat, lng) tuples
+    waypoints: list of (lat, lng) tuples
+    """
 
-    Args:
-        validated_coords (list[list[float]]): List of [lat, lng] coordinate pairs.
-        save_folder (str): Directory path to save the image.
-    Returns:
-        str: Filename of the generated image, or None on failure.
-    """
-    
     if not validated_coords or len(validated_coords) < 2:
         return None
 
     m = StaticMap(600, 400)
 
     start_lat, start_lng = validated_coords[0]
-    end_lat, end_lng = validated_coords[-1]
-
     m.add_marker(CircleMarker((start_lng, start_lat), 'green', 12))
+
+
+    print(f"Waypoints:{waypoints}", flush=True)
+    if waypoints:
+        for lat, lng in waypoints:
+            m.add_marker(CircleMarker((lng, lat), 'yellow', 12))
+
+    end_lat, end_lng = validated_coords[-1]
     m.add_marker(CircleMarker((end_lng, end_lat), 'red', 12))
 
     line_coords = [(lng, lat) for lat, lng in validated_coords]
@@ -407,7 +440,8 @@ def generate_route_image(validated_coords, save_folder='static/images/routes'):
     file_path = os.path.join(save_folder, filename)
 
     os.makedirs(save_folder, exist_ok=True)
-    
     image.save(file_path, format='PNG')
-
     return filename
+
+
+

@@ -17,9 +17,7 @@ export const geocodeAddress = async (address) =>
     try 
     {
       const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          address
-        )}`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}` 
       );
       const data = await response.json();
   

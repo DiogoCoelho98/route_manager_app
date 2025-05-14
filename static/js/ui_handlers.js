@@ -8,7 +8,6 @@
  */
 
 
-
 export const setSubmitLoadingState = (btn, isLoading) => {
   btn.disabled = isLoading;
   btn.innerHTML = isLoading

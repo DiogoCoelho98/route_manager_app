@@ -41,9 +41,17 @@ document.addEventListener("DOMContentLoaded", async () =>
   document
     .getElementById("draw-route-btn")
     .addEventListener("click", DrawingManager.triggerButton);
+    
   document
-    .getElementById("clear-route-btn")
-    .addEventListener("click", () => clearRoute(DrawingManager.drawn_items));
+  .getElementById("clear-route-btn")
+  .addEventListener("click", () => {
+    clearRoute(DrawingManager.drawn_items);
+    document.getElementById("from-input").value = "";
+    document.getElementById("to-input").value = "";
+
+    window.validateForm(document.getElementById("route-form"));
+    DrawingManager.cleanupDrawing();
+  });
 
   injectCustomDrawStyles();
 });

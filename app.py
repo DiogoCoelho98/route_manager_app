@@ -25,18 +25,21 @@ from flask import (
     session,
     url_for,
 )
+
 from flask_cors import CORS
 from helpers import (
     allowed_files,
     close_connection,
     generate_route_image,
     get_realistic_route,
+    get_country_from_coords,
     login_required,
     parse_float,
     process_route_internal,
     query_db,
     validate_coordinates,
 )
+
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 
@@ -452,25 +455,28 @@ def create_route():
         min_elevation = parse_float(request.form.get("min_elevation", ""))
         avg_elevation = parse_float(request.form.get("avg_elevation", ""))
 
+        image_filename = request.form.get("map_image_url")
+        country = request.form.get("country", "").strip()
+
         if not name or not coordinates:
             flash("Name and coordinates are required.", "error")
             return redirect("/create")
         
-        image_filename = generate_route_image(validated_coords)
-
         query_db(
             """
             INSERT INTO routes (
                 user_id, name, description, coordinates, 
                 elevation_gain, elevation_loss, max_elevation, 
-                min_elevation, avg_elevation, total_distance, map_image_urL
+                min_elevation, avg_elevation, total_distance, 
+                map_image_urL, country
             ) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 session["user_id"], name, description, coordinates,
                 elevation_gain, elevation_loss, max_elevation,
-                min_elevation, avg_elevation, total_distance, image_filename
+                min_elevation, avg_elevation, total_distance, 
+                image_filename, country
                 ),
                 commit = True
                 )
@@ -490,8 +496,10 @@ def all_routes():
     routes = query_db("""
         SELECT routes.*, users.username, users.id 
         FROM routes 
-        JOIN users ON routes.user_id = users.id
+        JOIN users ON 
+        routes.user_id = users.id
     """)
+    
     user_id = session.get("user_id")
     return render_template(
         "routes/all_routes.html", 
@@ -805,58 +813,97 @@ def get_route():
     Uses realistic routing for geocoded routes (with or without waypoints),
     and treats drawn routes as custom polylines.
     """
-
+    
     try:
         data = request.get_json()
         coordinates = data.get('coordinates', [])
+        waypoints = data.get('waypoints', [])
         mode = data.get('mode', 'foot-walking')
-        route_type = data.get('type', 'geocoded')  # default to geocoded
+        route_type = data.get('type', 'geocoded')
 
         # Validate coordinates
         if (not coordinates or not 
             all(isinstance(coord, dict) and 
                 'lat' in coord and 
                 'lng' in coord 
-                for coord in coordinates)):
+                for coord in coordinates)
+                ):
             return jsonify({
                 "status": "error", 
                 "message": "Invalid coordinates format"
             }), 400
 
+        # Validate waypoints
+        if (waypoints and not 
+            all(isinstance(wp, dict) and 
+                'lat' in wp and 
+                'lng' in wp 
+                for wp in waypoints)
+                ):
+            return jsonify({
+                "status": "error",
+                "message": "Invalid waypoints format"
+            }), 400
+
+        # Geocoded mode (routing)
         if route_type == "geocoded":
             api_key = current_app.config["ORS_API_KEY"]
             try:
                 route_geometry = get_realistic_route(
                     coordinates,
                     api_key,
-                    profile = mode
+                    profile=mode
                 )
                 if not route_geometry or len(route_geometry) < 2:
                     return jsonify({
                         "status": "error",
                         "message": "Failed to generate route geometry"
                     }), 400
-                
                 coordinates = route_geometry
-            
             except Exception as e:
                 return jsonify({
                     "status": "error",
                     "message": f"Routing API failed: {str(e)}"
                 }), 500
-            
-        # If drawn (polyline)
+
+        # Handle drawn mode (freehand polyline)
+        elif route_type == "drawn":
+            waypoints = []
+
+        # Calculate metrics
         route_details = process_route_internal(coordinates)
+
+        # Generate static map image
+        image_filename = generate_route_image(
+            validated_coords=[(coord['lat'], coord['lng']) for coord in coordinates],
+            waypoints=[(wp['lat'], wp['lng']) for wp in waypoints] if waypoints else [],
+            save_folder='static/images/routes'
+        )
+
+        route_details["map_image_url"] = image_filename
+
+        # Get country from first coordinate
+        if coordinates and isinstance(coordinates[0], dict):
+            lat, lng = coordinates[0]['lat'], coordinates[0]['lng']
+            country = get_country_from_coords(lat, lng)
+        else:
+            country = None
 
         return jsonify({
             "status": "success",
             "coordinates": coordinates,
+            "country": country,
             **route_details
         })
 
     except Exception as e:
         print(f"Route error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "status": "error",
+            "message": f"Server error: {str(e)}"
+        }), 500
+
+
 
 
 

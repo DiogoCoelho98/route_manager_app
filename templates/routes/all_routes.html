@@ -16,11 +16,8 @@
               <th class="py-3 px-4 text-center">Route Name</th>
               <th class="py-3 px-4 text-center">Description</th>
               <th class="py-3 px-4 text-center">Route Distance</th>
-              <th class="py-3 px-4 text-center">Elevation Gain</th>
-              <th class="py-3 px-4 text-center">Elevation Loss</th>
-              <th class="py-3 px-4 text-center hidden sm:table-cell">Max. Elevation</th>
-              <th class="py-3 px-4 text-center hidden sm:table-cell">Min. Elevation</th>
               <th class="py-3 px-4 text-center hidden md:table-cell">Avg. Elevation</th>
+              <th class="py-3 px-4 text-center">Country</th>   
               <th class="py-3 px-4 text-center hidden sm:table-cell">Author</th>
               <th class="py-3 px-4 text-center">Actions</th>
             </tr>
@@ -34,15 +31,14 @@
                   {% if route.description %}
                     {{ route.description }}
                   {% else %}
-                    <span class="text-gray-500 italic">No description available</span>
+                    <span class="text-gray-500 italic">
+                      No description available
+                    </span>
                   {% endif %}
                 </td>
                 <td class="py-2 px-4 font-semibold">{{ route.total_distance }} km</td>
-                <td class="py-2 px-4 font-semibold">{{ route.elevation_gain }} m</td>
-                <td class="py-2 px-4 font-semibold">{{ route.elevation_loss }} m</td>
-                <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.max_elevation }} m</td>
-                <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.min_elevation }} m</td>
                 <td class="py-2 px-4 font-semibold hidden md:table-cell">{{ route.avg_elevation }} m</td>
+                <td class="py-2 px-4 font-semibold">{{ route.country }}</td>
                 <td class="py-2 px-4 font-semibold hidden sm:table-cell">{{ route.username }}</td>
                 <td class="py-2 px-4 space-x-2 text-center">
                   <a

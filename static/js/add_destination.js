@@ -20,11 +20,13 @@ function create_waypoint_input(index)
     remove_btn.type = "button";
     remove_btn.className = "text-red-700 px-2 py-1 rounded hover:bg-red-300 cursor-pointer";
     remove_btn.textContent = "✖";
-    remove_btn.onclick = () => {
+    remove_btn.onclick = () => 
+    {
         wrapper.remove();
         // Re-enable add button if below limit
         const curr_waypoints = waypoint_container.querySelectorAll(".waypoint-input").length;
-        if (curr_waypoints < MAX_WAYPOINTS) {
+        if (curr_waypoints < MAX_WAYPOINTS) 
+        {
             add_waypoint_btn.disabled = false;
             add_waypoint_btn.classList.remove("opacity-50");
         }

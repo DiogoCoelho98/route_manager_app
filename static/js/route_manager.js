@@ -18,8 +18,6 @@ import { setItem } from "./storage.js";
 
 let current_route_polyline = null;
 let route_type = null;
-let route_markers = [];
-
 
 
 /**
@@ -27,19 +25,19 @@ let route_markers = [];
  * Sends the coordinates to `/get-route` endpoint and uses the response
  * to draw a Leaflet polyline. Also stores the response data in session storage.
  */
-export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-walking") => 
+export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode = "foot-walking") => 
 {
   try 
   {
     const response = await fetch("/get-route", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        { 
-          coordinates, 
-          mode,
-          type
-        }),
+      body: JSON.stringify({ 
+        coordinates, 
+        waypoints,
+        mode,
+        type
+      }),
     });
 
     const route_data = await response.json();
@@ -64,6 +62,7 @@ export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-wal
 
 
 
+
 /**
  * Clears the current route polyline, route markers, and optionally 
  * clears any drawn layers.
@@ -71,26 +70,13 @@ export const drawRoute = async (coordinates, type = "geocoded", mode = "foot-wal
 export const clearRoute = (drawnItems = null) => {
   const map = getMap();
 
-  if (current_route_polyline) {
+  if (current_route_polyline) 
+  {
     map.removeLayer(current_route_polyline);
     current_route_polyline = null;
     route_type = null;
     sessionStorage.removeItem("routeData");
   }
 
-  route_markers.forEach((marker) => map.removeLayer(marker));
-  route_markers = [];
-
   if (drawnItems) drawnItems.clearLayers();
 };
-
-
-
-/* 
-Adds a Leaflet marker to the map and keeps track of it for cleanup
-(not being used for now, since it's not necessary on the current 
-state of the app).
-
-export const addRouteMarker = (marker) => {
-  route_markers.push(marker);
-}; */

@@ -5,73 +5,20 @@
 {%endblock %} 
 
 {% block main %}
-  <div 
-    class="
-      flex 
-      flex-col 
-      flex-wrap 
-      content-center 
-      justify-center 
-      my-[2%] 
-      p-6"
-      >
-    <h2 class="text-2xl font-bold mb-4">
-      Complete Route Creating
-    </h2>
+  <div class="flex flex-col flex-wrap content-center justify-center my-[2%] p-6">
+    <h2 class="text-2xl font-bold mb-4">Complete Route Creating</h2>
 
-    <!-- Form to Finish Route Creation (name / description) -->
-    <form 
-      class="max-w-lg" 
-      action="/create"
-      method="post" 
-      id="create-route-form"
-      >
+    <!-- Form to Finish Route Creation (name / description) + Hidden Inputs for Route Metadata -->
+    <form action="/create" method="post" id="create-route-form" class="max-w-lg" >
+
       <div class="mb-4">
-        <label 
-          class="
-            block 
-            font-bold 
-            mb-2
-            " 
-          for="name"
-          >
-          Route Name
-        </label>
-        <input
-          class="border rounded w-full py-2 px-3"
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Route name"
-          required
-          autofocus
-        />
+        <label for="name" class="block font-bold mb-2">Route Name</label>
+        <input type="text" id="name" name="name" placeholder="Route name" required autofocus class="border rounded w-full py-2 px-3" />
       </div>
+
       <div class="mb-4">
-        <label 
-          class="
-            block 
-            font-bold 
-            mb-2
-            " 
-            for="description"
-          >
-          Route Description
-        </label>
-        <textarea
-          class="
-            border 
-            rounded 
-            w-full 
-            py-2 
-            px-3 
-            resize-none
-            "
-          name="description"
-          id="description"
-          autocorrect="on"
-        >
-        </textarea>
+        <label for="description" class="block font-bold mb-2">Route Description</label>
+        <textarea name="description" id="description" autocorrect="on" class="border rounded w-full py-2 px-3 resize-none"></textarea>
       </div>  
 
       <!-- Hidden Inputs for Route Metadata -->
@@ -83,26 +30,19 @@
         <input type="hidden" id="maxElevation" name="max_elevation" />
         <input type="hidden" id="minElevation" name="min_elevation" />
         <input type="hidden" id="avgElevation" name="avg_elevation" />
+        <input type="hidden" id="mapImageUrl" name="map_image_url" />
+        <input type="hidden" id="country" name="country" />
       </div>
+
       <button
-        class="
-          w-full 
-          bg-blue-600 
-          text-white 
-          px-4 
-          py-2 
-          rounded-lg 
-          hover:bg-blue-700 
-          cursor-pointer
-          disabled:opacity-50 
-          disabled:cursor-not-allowed
-          "
         type="submit"
         data-submit-button
         disabled
+        class="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
         Save Route
       </button>
+
     </form>
 
   </div>

@@ -34,12 +34,12 @@ document.addEventListener("DOMContentLoaded", () =>
         }
       }
   
-      // Transform array of coordinate objects into flat [lat, lng] pairs
+      // Transform array of coordinate objects into [lat, lng] pairs
       const coord_arr = route_data.coordinates.map((coord) => [
         coord.lat,
         coord.lng,
       ]);
-  
+      
       document.getElementById("coordinates").value = JSON.stringify(coord_arr);
       document.getElementById("totalDistance").value = route_data.total_distance || "";
       document.getElementById("elevationGain").value = route_data.elevation_gain || "";
@@ -47,6 +47,8 @@ document.addEventListener("DOMContentLoaded", () =>
       document.getElementById("maxElevation").value = route_data.max_elevation || "";
       document.getElementById("minElevation").value = route_data.min_elevation || "";
       document.getElementById("avgElevation").value = route_data.average_elevation || "";
+      document.getElementById("mapImageUrl").value = route_data.map_image_url || "";
+      document.getElementById("country").value = route_data.country || "";
   
       sessionStorage.removeItem("routeData");
     });
