@@ -53,7 +53,7 @@ Route Planner is a web application that enables users to plan, save, and share r
 ### Installation
 ```
 git clone https://github.com/DiogoCoelho98/route_manager_app.git
-cd route_manager_app
+cd hiking_running_route_planner
 ```
 
 ### Environment Variables
