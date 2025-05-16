@@ -1,31 +1,56 @@
 Project Overview
---> Objective: Create a web app that allows users to plan, save, and share hiking and running routes.
---> Backend: Python with Flask.
---> Frontend: HTML, CSS, JavaScript.
---> Database: SQLite.
+→ Objective: Create a web app that allows users to plan, save, and share routes.
+→ Backend: Python with Flask.
+→ Frontend: HTML, CSS (Tailwind), JavaScript (Vanilla + Leaflet.js).
+→ Database: SQLite.
 
 
 Core Features
---> User Authentication
+→ User Authentication
     Description: Allow users to create accounts and log in.
-    Implementation: Use Flask-Login for user session management.
+    Implementation: Flask-Login for session management.
 
---> Route Creation
-    Description: Users can create routes by drawing on a map or entering coordinates.
-    Implementation: Use Leaflet.js for map integration and allow users to input coordinates manually.
+→ Route Creation
+    Description: Users can create routes by drawing on a map or entering addresses.
+    Implementation: Leaflet.js for map, geocoding with Nominatim, realistic routing with OpenRouteService.
 
---> Route Saving and Sharing
-    Description: Users can save routes to their profile and share them with others.
-    Implementation: Store routes in SQLite with user IDs for ownership tracking.    
+→ Route Storage
+    Description: Store only key points (start, waypoints, end) for each route.
+    Implementation: Save minimal coordinate set in SQLite, and generate full geometry on demand.
 
---> Route Details
-    Description: Display route details such as distance, elevation gain, and estimated time.
-    Implementation: Use APIs like OpenStreetMap or Google Maps to calculate route metrics.
+→ Static Map Image
+    Description: Show a static map image with start, end, and waypoint markers for each route.
+    Implementation: Generate image with StaticMap.
 
---> Community Features:
-    Description: Allow users to comment on routes or rate them.
-    Implementation: Add a comments section under each route and implement a rating system. 
+→ Route Details
+    Description: Display route details (distance, elevation gain/loss, min/max/avg elevation, country).
+    Implementation: Calculate metrics using OpenRouteService (country detected via reverse geocoding).
+
+→ Community Features
+    Description: Users can comment on routes.
+    Implementation: Comments section under each route.
+
+→ Responsive UI & UX
+    Description: Mobile-friendly design, video backgrounds, clear marker legend, modern footer.
+    Implementation: Tailwind CSS for styling, custom JS for interactivity.
 
 
 
-https://www.rac.co.uk/route-planner/  --> Model to design the homepage
+Future Plans / Improvements
+→ Map Search
+    Add a map input to allow users to search for locations directly on the map.
+
+→ Interactive route editing: allow users to drag points to tweak routes.
+    Real-time updates: dynamically update route and metrics as users edit.
+
+→ Route Ratings
+    Implement a feature for users to rate routes.
+
+→ Elevation Profile Visualization
+    Display an elevation profile graph (ChartJS) on the route details view.
+
+→ Route Sharing & Export
+    Generate shareable links and export routes as GPX/KML files.
+
+→ Map Enhancements
+    Add traffic overlays, points of interest, or weather layers.

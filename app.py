@@ -14,6 +14,7 @@ This module includes:
 
 import json
 import os
+from dotenv import load_dotenv
 from flask import (
     current_app,
     Flask,
@@ -50,12 +51,12 @@ app = Flask(__name__)
 CORS(app)                       # Enables front-end and back-end communication
 app.secret_key = os.urandom(24) # Secure session encryption
 
-
+load_dotenv()
 
 # Config paths and API keys
 UPLOAD_FOLDER = "static/images/users"
 ROUTE_IMAGE_FOLDER = "static/images/routes"
-ORS_API_KEY = "5b3ce3597851110001cf62486650b06bf6954682b8396f17343a1d68"
+ORS_API_KEY = os.getenv("ORS_API_KEY")
 
 # Flask app config
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
