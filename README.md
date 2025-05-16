@@ -1,7 +1,7 @@
 # Route Planner
 
 ## Description
-Route Planner is a web application that enables users to plan, save, and share hiking and running routes. Users can create routes by drawing on an interactive map or entering addresses, view route details (distance, elevation, country, etc.), and interact with the community through comments and ratings.
+Route Planner is a web application that enables users to plan, save, and share routes. Users can create routes by drawing on an interactive map or entering addresses, view route details (distance, elevation, country, etc.), and interact with the community through comments and ratings.
 
 ## Built With
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5 icon" />
@@ -20,11 +20,7 @@ Route Planner is a web application that enables users to plan, save, and share h
 - **OpenRouteService (ORS)** and **Nominatim** are used for realistic routing, geocoding, and reverse geocoding.
 - **Tailwind CSS** allows for rapid, responsive, and modern UI development.
 - **python-dotenv** is used to securely manage API keys and sensitive configuration.
-- **StaticMap & Pillow** are used to generate static map images for route visualization.
-- Only key route points (start, waypoints, end) are stored in the database for efficiency; full geometry is generated on demand.
-- User authentication and session management are implemented with Flask-Login.
-- Community features (comments, ratings) foster engagement and feedback.
-- The codebase and UI are designed to be mobile-friendly and accessible.
+- **StaticMap** is used to generate static map images for route visualization.
 
 ## Features
 - **Create and save routes** by drawing on a map or entering addresses
@@ -56,3 +52,34 @@ Route Planner is a web application that enables users to plan, save, and share h
 - [Nominatim](https://nominatim.org/) (used via public API)
 
 ### Installation
+```
+git clone https://github.com/DiogoCoelho98/route_manager_app.git
+cd route_manager_app
+```
+
+### Environment Variables
+Create a `.env` file in the root directory and add:
+```
+ORS_API_KEY=<your-openrouteservice-api-key>
+```
+
+### Starting the Server
+```
+python app.py
+```
+Then open your browser and navigate to `http://localhost:5000`.
+
+### Usage
+- Register or log in to your account.
+- Create a new route by drawing on the map or searching for locations.
+- Save your route and view its details (distance, elevation, country, etc.).
+- Comment on and rate routes created by others.
+
+## Project Link
+**Not available yet**
+
+## Contacts
+- **https://www.linkedin.com/in/diogo-borges-coelho/**
+- **diogocoelho19988@gmail.com**
+
+
