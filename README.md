@@ -40,8 +40,7 @@ Route Planner is a web application that enables users to plan, save, and share r
 
 
 ### Sequence Diagram
-<!-- Add your sequence diagram image here -->
-
+![ER Diagram](https://raw.githubusercontent.com/DiogoCoelho98/route_manager_app/master/documentation/route_creation_sequence_chart.png)
 
 ## Getting Started
 
