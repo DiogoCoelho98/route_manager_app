@@ -36,7 +36,7 @@ Route Planner is a web application that enables users to plan, save, and share r
 ## Diagrams
 
 ### Entity Relationship Diagram (ERD)
-<!-- Add your ER diagram image here -->
+
 
 
 ### Sequence Diagram
