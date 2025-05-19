@@ -36,12 +36,11 @@ Route Planner is a web application that enables users to plan, save, and share r
 ## Diagrams
 
 ### Entity Relationship Diagram (ERD)
-
+![ER Diagram](https://raw.githubusercontent.com/DiogoCoelho98/route_manager_app/master/documentation/ER_diagram.png)
 
 
 ### Sequence Diagram
-<!-- Add your sequence diagram image here -->
-
+![ER Diagram](https://raw.githubusercontent.com/DiogoCoelho98/route_manager_app/master/documentation/route_creation_sequence_chart.png)
 
 ## Getting Started
 
@@ -54,7 +53,7 @@ Route Planner is a web application that enables users to plan, save, and share r
 ### Installation
 ```
 git clone https://github.com/DiogoCoelho98/route_manager_app.git
-cd route_manager_app
+cd hiking_running_route_planner
 ```
 
 ### Environment Variables
