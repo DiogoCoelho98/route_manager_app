@@ -65,7 +65,9 @@
         </div>
 
         <!-- Mobile Menu Content -->
-        <div id="mobile-menu-content" class="hidden md:hidden mt-4">
+        <div 
+          id="mobile-menu-content" 
+          class="max-h-0 overflow-hidden opacity-0 scale-y-95 transition-all duration-300 ease-in-out origin-top md:hidden mt-4">
           <ul class="space-y-2">
             {% if session.get('user_id') %}
               <li>
@@ -137,7 +139,7 @@
 
     <main class="flex-grow">
 
-      <!-- Flash Messages: Responsive, Centered, and Floating -->
+      <!-- Flash Messages -->
       <div 
         id="flash-messages"
         class="fixed left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs px-2"
@@ -165,7 +167,7 @@
       </div>
 
       {% block main %}
-      <!-- Main content -->
+        <!-- Main content -->
       {% endblock %}
 
     </main>

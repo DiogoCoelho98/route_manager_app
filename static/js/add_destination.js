@@ -1,3 +1,16 @@
+/**
+ * Manages dynamic addition and removal of waypoint input fields
+ * in the route creation form.
+ *
+ * Features:
+ *   - Allows users to add up to MAX_WAYPOINTS waypoint fields.
+ *   - Dynamically creates/removes input fields for waypoints.
+ *   - Disables the "Add Waypoint" button when the maximum is reached.
+ *   - Ensures a responsive and user-friendly UI for route creation.
+ */
+
+
+
 const MAX_WAYPOINTS = 5;
 
 const waypoint_container = document.getElementById("waypoints-container");
@@ -5,6 +18,11 @@ const add_waypoint_btn = document.getElementById("add-waypoint-btn");
 
 
 
+/**
+ * Creates a new waypoint input row with a remove button.
+ * @param {number} index - The index of the waypoint (for placeholder text).
+ * @returns {HTMLElement} The wrapper div containing the input and remove button.
+ */
 function create_waypoint_input(index) 
 {
     const wrapper = document.createElement("div");
@@ -51,7 +69,7 @@ add_waypoint_btn.addEventListener("click", () =>
         new_input_wrapper.querySelector("input").focus();
     }
 
-    // Disable button if limit
+    // Disable button if limit is reached
     if (index + 1 >= MAX_WAYPOINTS) {
         add_waypoint_btn.disabled = true;
         add_waypoint_btn.classList.add("opacity-50", "disabled:cursor-not-allowed");

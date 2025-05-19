@@ -1,19 +1,17 @@
-/* 
-# ===========================================================
-#                    Application Entry Point 
-# ===========================================================
- Description:
- This script is the main initialization file for the client-side 
- application. It sets up the Leaflet map, drawing tools, form handling,
- and custom control styling.
-
- Modules used:
- - initMap: Initializes the base Leaflet map
- - handleFormSubmit: Handles form submission logic
- - clearRoute: Clears existing drawn routes from the map
- - DrawingManager: Manages draw tools for route creation
- - injectCustomDrawStyles: Adds custom CSS for draw controls
-*/
+/********************************************************************
+* Description:
+*   Main script for the initialization file for the client-side 
+*   application. It sets up the Leaflet map, drawing tools, form handling,
+*   and custom control styling.
+*
+* Modules used:
+*   - initMap: Initializes the base Leaflet map
+*   - handleFormSubmit: Handles form submission logic
+*   - clearRoute: Clears existing drawn routes from the map
+*   - DrawingManager: Manages draw tools for route creation
+*   - injectCustomDrawStyles: Adds custom CSS for draw controls
+*   - leaflet_custom_controls.js: Registers custom Leaflet controls
+ ********************************************************************/
 
 
 import { initMap } from "./map_manager.js";

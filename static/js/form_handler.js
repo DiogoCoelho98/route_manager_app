@@ -1,13 +1,11 @@
 /********************************************************************
- *                      Form Submission Handler                      *
- * ------------------------------------------------------------------
- * This module manages user-submitted route planning via address 
+ * Manages user-submitted route planning via address 
  * input fields. It converts textual locations into coordinates 
  * using geocoding, places markers, and renders the route on the map.
  *
  * Dependencies:
  *    - geocodeAddress()      : Converts address strings into lat/lng.
- *    - drawRoute(), clearRoute(), addRouteMarker(): Route management.
+ *    - drawRoute(), clearRoute(): Route management.
  *    - setSubmitLoadingState(): Manages UI loading state.
  ********************************************************************/
 
@@ -19,6 +17,8 @@ import { setSubmitLoadingState } from "./ui_handlers.js";
 
 let selected_mode = "foot-walking"; // Default mode
 
+
+// Mode selection: update selected_mode and button UI states
 document.querySelectorAll("[data-mode]").forEach((btn) => 
 {
   btn.addEventListener("click", () => {
@@ -33,6 +33,15 @@ const waypoint_container = document.getElementById("waypoints-container");
 
 
 
+/**
+ * Handles the submission of the route planning form.
+ * - Geocodes all address fields (start, waypoints, end).
+ * - Draws the route on the map using geocoded coordinates.
+ * - Updates sessionStorage and hidden form fields with route data.
+ * - Manages UI loading state and form reset.
+ * 
+ * @param {Event} e - The form submission event.
+ */
 export const handleFormSubmit = async (e) => 
 {
   e.preventDefault();
@@ -69,7 +78,7 @@ export const handleFormSubmit = async (e) =>
     }));
 
     await drawRoute(
-      key_points,          
+      key_points,               // All key points (start, waypoints, end)          
       key_points.slice(1, -1),  // waypoints only (excludes start and end points)
       "geocoded",
       selected_mode,

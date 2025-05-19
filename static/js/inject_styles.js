@@ -1,9 +1,16 @@
+
 /**
  * Injects custom CSS styles into the document head to override default
- * Leaflet draw control styles and enhance the appearance of custom drawing controls.
- * 
- * - Hides Leaflet's default drawing UI components (toolbar, actions, tooltips)
- * - Styles the custom action buttons and draw toggle for a cleaner interface
+ * Leaflet Draw control styles and enhance the appearance of custom drawing controls.
+ *
+ * Features:
+ *   - Hides Leaflet's default drawing UI components (toolbar, actions, tooltips)
+ *   - Styles the custom action buttons and draw toggle for a cleaner interface
+ *   - Ensures custom controls visually integrate with the app's design
+ *
+ * Usage:
+ *   Call injectCustomDrawStyles() once after the DOM is ready and before
+ *   initializing custom map controls.
  */
 
 

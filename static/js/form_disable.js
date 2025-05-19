@@ -1,6 +1,19 @@
 /**
- * Validates the form to ensure required fields are filled.
- * Enables/disables the submit button based on field content.
+ * Provides real-time form validation for required fields and enables/disables
+ * the submit button accordingly. Ensures users cannot submit incomplete forms.
+ *
+ * Usage:
+ *   - Add the "required" attribute to any <input> or <textarea> that must be filled.
+ *   - Add a [data-submit-button] attribute to form's submit button.
+ *   - This script will automatically validate forms on input and on page load.
+ */
+
+
+
+/**
+ * Validates the form to ensure all required fields are filled.
+ * Disables the submit button if any required field is empty.
+ * @param {HTMLFormElement} form - The form to validate.
  */
 function validateForm(form) 
 {
@@ -22,6 +35,8 @@ function validateForm(form)
 
 
 
+
+// Set up validation on all forms when DOM is loaded
 document.addEventListener("DOMContentLoaded", function() 
 {
   let forms = document.querySelectorAll("form");
@@ -38,4 +53,5 @@ document.addEventListener("DOMContentLoaded", function()
 
 
 
+// Expose validateForm globally
 window.validateForm = validateForm;

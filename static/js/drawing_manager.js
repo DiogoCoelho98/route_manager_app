@@ -1,9 +1,13 @@
 /********************************************************************
- *                      Drawing Manager Module                      *
- * ------------------------------------------------------------------
  * Handles the UI and logic related to drawing custom routes on the 
  * Leaflet map using Leaflet.draw. Integrates with custom UI buttons,
  * updates UI states, and triggers route rendering on completion.
+ *
+ * Features:
+ *   - Allows users to draw polylines representing custom routes.
+ *   - Integrates with custom map controls and UI buttons.
+ *   - Manages drawing state, cleanup, and button states.
+ *   - Triggers route rendering and updates UI on drawing completion.
  ********************************************************************/
 
 
@@ -26,6 +30,11 @@ document.querySelectorAll("[data-mode]").forEach((btn) =>
 
 
 
+
+/**
+ * Object that manages the drawing workflow on the Leaflet map.
+ * Exposes methods for initialization, toggling drawing, and handling drawing events.
+ */
 export const DrawingManager = { 
   map: null,
   drawnItems: null,
@@ -34,6 +43,12 @@ export const DrawingManager = {
   isDrawingActive: false,
   startMarker: null,
 
+  /**
+   * Initializes the DrawingManager with the map and drawn items layer.
+   * Adds custom draw controls and sets up event listeners.
+   * @param {L.Map} map - The Leaflet map instance.
+   * @param {L.FeatureGroup} drawnItems - Layer group for drawn features.
+   */
   init(map, drawnItems) {
     this.map = map;
     this.drawnItems = drawnItems;
@@ -48,13 +63,23 @@ export const DrawingManager = {
     map.on("draw:created", this.handleDrawComplete.bind(this));
   },
 
+  /**
+   * Simulates a click on the custom draw button.
+   * @param {Event} e - The triggering event.
+   */
   triggerButton(e) {
     e.preventDefault();
     document.querySelector(".leaflet-control-custom a")?.click();
   },
 
+  /**
+   * Toggles the drawing mode on the map.
+   * If drawing is active, disables and cleans up.
+   * Otherwise, enables drawing and updates UI.
+   */
   toggleDrawing() {
-    if (this.isDrawingActive) {
+    if (this.isDrawingActive) 
+    {
       this.activeDrawInstance?.disable();
       this.cleanupDrawing();
       return;
@@ -62,7 +87,8 @@ export const DrawingManager = {
 
     this.drawnItems.clearLayers();
 
-    if (this.currentDrawControl) {
+    if (this.currentDrawControl) 
+    {
       this.map.removeControl(this.currentDrawControl);
     }
 
@@ -106,6 +132,10 @@ export const DrawingManager = {
     window.validateForm(document.getElementById("route-form"));
   },
 
+  /**
+   * Updates the visual state of draw-related buttons.
+   * @param {boolean} isActive - Whether drawing mode is active.
+   */
   updateButtonStates(isActive) {
     document
       .querySelectorAll(".leaflet-control-custom a, #draw-route-btn")
@@ -120,6 +150,10 @@ export const DrawingManager = {
     this.map.customActionsControl._container.style.display = "none";
   },
 
+   /**
+   * Initializes and returns a Leaflet Draw control with only polyline enabled.
+   * @returns {L.Control.Draw} - The configured draw control.
+   */
   initDrawControl() {
     return new L.Control.Draw({
       position: "topleft",
@@ -150,7 +184,8 @@ export const DrawingManager = {
 
   /**
    * Handler for when the user finishes drawing a route.
-   * Converts the drawn polyline into coordinates and draws the route on the map.
+   * Converts the drawn polyline into coordinates and triggers route rendering.
+   * @param {Object} e - The draw:created event object.
    */
   async handleDrawComplete(e) 
   {

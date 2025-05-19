@@ -1,11 +1,18 @@
+
 /**
- * Utility functions for interacting with sessionStorage, 
- * providing safe and error-handling methods for 
- * setting, getting, and removing items.
+ * Utility functions for interacting with sessionStorage,
+ * providing safe, error-handling methods for setting, getting,
+ * and removing items. All data is serialized/deserialized as JSON.
  */
 
 
 
+/**
+ * Sets a value in sessionStorage under the given key.
+ * Serializes the value as JSON.
+ * @param {string} key - The sessionStorage key.
+ * @param {*} value - The value to store.
+ */
 export const setItem = (key, value) => 
 {
     try 
@@ -18,6 +25,13 @@ export const setItem = (key, value) =>
     }
 };
 
+
+/**
+ * Retrieves a value from sessionStorage by key.
+ * Parses the value from JSON.
+ * @param {string} key - The sessionStorage key.
+ * @returns {*} The parsed value, or null if not found or error.
+ */
 export const getItem = (key) => 
 {
     try 
@@ -32,6 +46,11 @@ export const getItem = (key) =>
     }
 };
 
+
+/**
+ * Safely removes an item from sessionStorage by key.
+ * @param {string} key - The sessionStorage key.
+ */
 export const removeItem = (key) => 
 {
     try 

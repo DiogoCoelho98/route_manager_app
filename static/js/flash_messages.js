@@ -1,3 +1,11 @@
+/**
+ * Handles the display and dismissal of flash messages (alerts).
+ * - Allows users to manually close flash messages.
+ * - Automatically fades out and removes flash messages after a timeout.
+ */
+
+
+
 document.querySelectorAll('.close-flash').forEach(btn => 
 {
     btn.addEventListener('click', function() {

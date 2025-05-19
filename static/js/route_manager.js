@@ -1,6 +1,4 @@
 /********************************************************************
- *                      Route Manager Module                         *
- * ------------------------------------------------------------------
  * Handles the logic for drawing and clearing routes on the map.
  * Communicates with the Flask backend to fetch route metrics and 
  * visualize them via Leaflet polylines.
@@ -9,6 +7,10 @@
  *   - drawRoute: Sends coordinates to the backend and draws route.
  *   - clearRoute: Removes the route polyline and markers from the map.
  *   - addRouteMarker: Registers and manages markers for current route.
+ *
+ * Dependencies:
+ *   - map_manager.js: Provides access to the shared Leaflet map instance.
+ *   - storage.js: Handles session storage for route data.
  ********************************************************************/
 
 
@@ -20,10 +22,17 @@ let current_route_polyline = null;
 let route_type = null;
 
 
+
 /**
  * Draws a route on the map using provided coordinates and stores the result.
- * Sends the coordinates to `/get-route` endpoint and uses the response
+ * Sends the coordinates to the `/get-route` endpoint and uses the response
  * to draw a Leaflet polyline. Also stores the response data in session storage.
+ *
+ * @param {Array} coordinates - Array of coordinate objects for the route (start, waypoints, end).
+ * @param {Array} waypoints - Array of waypoint coordinate objects (excluding start/end).
+ * @param {string} type - Route type ("geocoded" or "drawn").
+ * @param {string} mode - Travel mode (e.g., "foot-walking").
+ * @param {Array|null} key_points - Optional array of key points for the route.
  */
 export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode = "foot-walking", key_points = null) => 
 {
@@ -71,6 +80,8 @@ export const drawRoute = async (coordinates, waypoints, type = "geocoded", mode 
 /**
  * Clears the current route polyline, route markers, and optionally 
  * clears any drawn layers.
+ *
+ * @param {L.FeatureGroup|null} drawnItems - Optional Leaflet feature group to clear.
  */
 export const clearRoute = (drawnItems = null) => {
   const map = getMap();
